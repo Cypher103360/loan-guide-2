@@ -4,16 +4,17 @@ public class LoanAppModel {
     String id;
     int appImage;
     String appName;
-    String interest,amount,age,requirememt;
+    String interest,amount,age,requirement,appUrl;
 
-    public LoanAppModel(String id, int appImage, String appName, String interest, String amount, String age, String requirememt) {
+    public LoanAppModel(String id, int appImage, String appName, String interest, String amount, String age, String requirement, String appUrl) {
         this.id = id;
         this.appImage = appImage;
         this.appName = appName;
         this.interest = interest;
         this.amount = amount;
         this.age = age;
-        this.requirememt = requirememt;
+        this.requirement = requirement;
+        this.appUrl = appUrl;
     }
 
     public String getId() {
@@ -40,7 +41,11 @@ public class LoanAppModel {
         return age;
     }
 
-    public String getRequirememt() {
-        return requirememt;
+    public String getRequirement() {
+        return requirement;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
     }
 }

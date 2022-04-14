@@ -19,6 +19,9 @@ public class PurposeForLoanActivity extends AppCompatActivity {
         binding = ActivityPurposeForLoanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
         binding.medicalLoan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,5 +50,11 @@ public class PurposeForLoanActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

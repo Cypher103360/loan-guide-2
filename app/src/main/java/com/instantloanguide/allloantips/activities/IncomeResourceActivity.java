@@ -18,6 +18,9 @@ public class IncomeResourceActivity extends AppCompatActivity {
         binding = ActivityIncomeResourceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
         binding.salariedCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,5 +57,11 @@ public class IncomeResourceActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

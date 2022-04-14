@@ -41,10 +41,20 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<LoanAppsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        LoanAppModel loanAppModel = loanAppModelList.get(position);
         holder.appName.setText(loanAppModelList.get(position).getAppName());
-        holder.appIcon.setImageResource(R.drawable.ic_launcher_foreground);
+        holder.appIcon.setImageResource(loanAppModelList.get(position).getAppImage());
         holder.applyBtn.setOnClickListener(view -> {
             Intent intent = new Intent(context, AppDetailsActivity.class);
+
+            intent.putExtra("img",loanAppModel.getAppImage());
+
+            intent.putExtra("name",loanAppModel.getAppName());
+            intent.putExtra("interest",loanAppModel.getInterest());
+            intent.putExtra("amount",loanAppModel.getAmount());
+            intent.putExtra("age",loanAppModel.getAge());
+            intent.putExtra("requirement",loanAppModel.getRequirement());
+            intent.putExtra("url",loanAppModel.getAppUrl());
             context.startActivity(intent);
         });
     }

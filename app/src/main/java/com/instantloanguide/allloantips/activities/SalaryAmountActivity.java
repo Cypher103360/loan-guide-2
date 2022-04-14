@@ -22,6 +22,9 @@ public class SalaryAmountActivity extends AppCompatActivity {
         binding = ActivitySalaryAmountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
         id = getIntent().getStringExtra("id");
         switch (id) {
             case "salaried":
@@ -46,5 +49,11 @@ public class SalaryAmountActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

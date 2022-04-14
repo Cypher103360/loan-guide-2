@@ -17,6 +17,10 @@ public class CategoryActivity extends AppCompatActivity {
         binding = ActivityCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
+
         binding.personalLoanCard.setOnClickListener(view -> {
             Intent intent = new Intent(CategoryActivity.this,LoanAppsActivity.class);
             intent.putExtra("title","Personal Loan Apps");
@@ -53,12 +57,18 @@ public class CategoryActivity extends AppCompatActivity {
             intent.putExtra("id","studentLoan");
             startActivity(intent);
         });
-        binding.emiCalculatorCard.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_APP_CALCULATOR);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
+//        binding.emiCalculatorCard.setOnClickListener(view -> {
+//            Intent intent = new Intent();
+//            intent.setAction(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_APP_CALCULATOR);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

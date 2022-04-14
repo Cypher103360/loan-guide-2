@@ -19,6 +19,11 @@ public class CheckDocumentActivity extends AppCompatActivity {
         binding = ActivityCheckDocumentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         id = getIntent().getStringExtra("id");
+
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
+
         binding.submitDocBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -27,5 +32,11 @@ public class CheckDocumentActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

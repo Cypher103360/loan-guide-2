@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "331702306061",
+    "project_id": "loan-guide-5efee",
+    "storage_bucket": "loan-guide-5efee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331702306061:android:123b42ae2e0cf8db8ddc44",
+        "android_client_info": {
+          "package_name": "com.instantloanguide.allloantips"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331702306061-rea35sn27ae0mg3s226jkful571pn8k7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfJJhn7mLY0Wv9kNHRCZK9ZOZfhoi3YxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331702306061-rea35sn27ae0mg3s226jkful571pn8k7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,8 +21,11 @@ public class LoanAmountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLoanAmountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         id = getIntent().getStringExtra("id");
+
+        binding.backBtn.setOnClickListener(view -> {
+            onBackPressed();
+        });
 
         binding.submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,5 +39,11 @@ public class LoanAmountActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
