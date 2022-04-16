@@ -69,6 +69,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id" />
+
+        <meta-data android:name="applovin.sdk.key"
+            android:value="ksHAcmHXHidLv2Z4I8Xh935-zmB22WK7W0Ir0MXJR5s8z0lo2qfryQBIiyh53bG5PquxI4RSHOZZubFpt0v2Qi"/>
+
     </application>
 
 </manifest>

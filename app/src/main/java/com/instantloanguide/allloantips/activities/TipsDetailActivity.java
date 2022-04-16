@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityTipsDetailBinding;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class TipsDetailActivity extends AppCompatActivity {
     ActivityTipsDetailBinding binding;
@@ -34,6 +36,9 @@ public class TipsDetailActivity extends AppCompatActivity {
         binding.backBtn.setOnClickListener(view -> {
             onBackPressed();
         });
+        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
+
         id = getIntent().getStringExtra("id");
         tipsTitle = getIntent().getStringExtra("title");
         hinDesc = getIntent().getStringExtra("hinDesc");
@@ -72,6 +77,7 @@ public class TipsDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Ads.destroyBanner();
         finish();
     }
 }

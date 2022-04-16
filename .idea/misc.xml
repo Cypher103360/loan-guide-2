@@ -3,11 +3,42 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable-v24/item_bg.xml" value="0.155" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/drawer_item.xml" value="0.155" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_app_details.xml" value="0.22" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_category.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_check_document.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_home.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_income_resource.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_loan_amount.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_loan_apps.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_main.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_news_details.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_privacy_policy.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_purpose_for_loan.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_salary_amount.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_tips_detail.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_welcome.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/app_item_layout.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_home.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_loan_type.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_news.xml" value="0.305111821086262" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_tips.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/header.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/news_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/tips_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/drawable/back_icon_bg.xml" value="0.1295" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/drawable/item_bg.xml" value="0.1325" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/activity_edit.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/activity_main.xml" value="0.19179487179487179" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/ad_id_layout.xml" value="0.19179487179487179" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/edit_news_card.xml" value="0.22" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/edit_rv_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/loading.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/news_card_layout.xml" value="0.22749391727493917" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/news_item_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/news_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/tips_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/upload_image_dialog.xml" value="0.19479166666666667" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_accessibility_24.xml" value="0.1415" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_account_balance_24.xml" value="0.155" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.155" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.1415" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_attach_money_24.xml" value="0.1415" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/drawable/ic_baseline_business_center_24.xml" value="0.1415" />
@@ -25,27 +56,17 @@
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_loan_amount.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_loan_apps.xml" value="0.25" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_main.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_news_details.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_privacy_policy.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_purpose_for_loan.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_salary_amount.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_tips_detail.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_welcome.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/app_item_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_home.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_loan_type.xml" value="0.25" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_loan_types.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_news.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_tips.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/header.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/loading.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/news_layout.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/tips_layout.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/menu/menu.xml" value="0.2234375" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

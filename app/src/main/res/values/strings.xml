@@ -15,4 +15,7 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="hindi">Hin</string>
     <string name="english">Eng</string>
+
+    <string name="app_id">ca-app-pub-1306982071797241~2630782596</string>
+
 </resources>

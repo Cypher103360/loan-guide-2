@@ -26,7 +26,9 @@ import com.instantloanguide.allloantips.models.TipsClickInterface;
 import com.instantloanguide.allloantips.models.TipsModel;
 import com.instantloanguide.allloantips.models.TipsModelList;
 import com.instantloanguide.allloantips.models.TipsViewModel;
+import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class TipsFragment extends Fragment implements TipsClickInterface {
     FragmentTipsBinding binding;
@@ -46,6 +48,8 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setTipsData(requireActivity());
+        ShowAds showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
 
         binding.swipeRefresh.setOnRefreshListener(() -> {
             setTipsData(requireActivity());
@@ -68,6 +72,7 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
 
     @Override
     public void onClicked(TipsModel tipsModel) {
+        Ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), TipsDetailActivity.class);
         intent.putExtra("id",tipsModel.getId());
         intent.putExtra("title",tipsModel.getTipsTitle());

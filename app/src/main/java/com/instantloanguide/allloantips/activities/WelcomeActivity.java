@@ -1,14 +1,15 @@
 package com.instantloanguide.allloantips.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import com.instantloanguide.allloantips.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.instantloanguide.allloantips.databinding.ActivityWelcomeBinding;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -20,19 +21,16 @@ public class WelcomeActivity extends AppCompatActivity {
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        ShowAds showAds = new ShowAds(this, binding.adviewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
 
-                binding.lottieRunning.setVisibility(View.VISIBLE);
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(WelcomeActivity.this,HomeActivity.class));
-                    }
-                },4000);
-            }
+        binding.startBtn.setOnClickListener(view -> {
+            binding.lottieRunning.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(() -> {
+                Ads.destroyBanner();
+                showAds.showInterstitialAds(this);
+                startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
+            }, 4000);
         });
     }
 }
