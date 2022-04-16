@@ -3,6 +3,7 @@ package com.instantloanguide.allloantips.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.instantloanguide.allloantips.activities.AppDetailsActivity;
 import com.instantloanguide.allloantips.models.LoanAppModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class LoanAppsAdapter extends RecyclerView.Adapter<LoanAppsAdapter.ViewHolder> {
@@ -68,12 +71,14 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<LoanAppsAdapter.ViewHo
     public void updateLoanAppList(List<LoanAppModel> loanAppModels) {
         loanAppModelList.clear();
         loanAppModelList.addAll(loanAppModels);
+        Collections.shuffle(loanAppModelList);
         notifyDataSetChanged();
     }
 
     public interface LoanAppInterface {
         void onItemClicked(LoanAppModel loanAppModel, int position);
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView appName;

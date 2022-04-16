@@ -13,4 +13,6 @@
     <string name="version_1_1">Version -1</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
+    <string name="hindi">Hin</string>
+    <string name="english">Eng</string>
 </resources>

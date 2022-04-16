@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import com.instantloanguide.allloantips.R;
@@ -22,7 +23,15 @@ public class WelcomeActivity extends AppCompatActivity {
         binding.startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(WelcomeActivity.this,HomeActivity.class));
+
+                binding.lottieRunning.setVisibility(View.VISIBLE);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(WelcomeActivity.this,HomeActivity.class));
+                    }
+                },4000);
             }
         });
     }

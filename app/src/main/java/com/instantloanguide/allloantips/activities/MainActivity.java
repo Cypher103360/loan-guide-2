@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
@@ -24,6 +25,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityMainBinding;
 import com.instantloanguide.allloantips.utils.MyReceiver;
 
@@ -50,14 +52,18 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter intentFilter;
 
     private void Set_Visibility_OFF() {
+        binding.loadingLottie.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.VISIBLE);
-        binding.noNetwork.setVisibility(View.VISIBLE);
-        // binding.spBg.setBackgroundColor(0);
+        binding.noInternetLottie.setVisibility(View.VISIBLE);
+        binding.splashContainer.setBackgroundColor(0);
     }
 
     private void Set_Visibility_ON() {
+        binding.loadingLottie.setVisibility(View.VISIBLE);
         binding.tvNotConnected.setVisibility(View.GONE);
-        binding.noNetwork.setVisibility(View.GONE);
+        binding.noInternetLottie.setVisibility(View.GONE);
+        binding.splashContainer.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_500));
+
 
         if (count == 2) {
             new Handler().postDelayed(new Runnable() {
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
 
                 }
-            }, 1000);
+            }, 3000);
         }
 
     }

@@ -14,6 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoanGuide">
         <activity
+            android:name=".activities.TipsDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.NewsDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.PrivacyPolicyActivity"
             android:exported="false" />
 

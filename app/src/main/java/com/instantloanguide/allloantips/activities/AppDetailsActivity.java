@@ -2,6 +2,9 @@ package com.instantloanguide.allloantips.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -39,11 +42,26 @@ public class AppDetailsActivity extends AppCompatActivity {
         binding.appAmount.setText(amount);
         binding.appAge.setText(age);
         binding.appRequirement.setText(requirement);
+        binding.downloadBtn.setOnClickListener(view -> {
+            openWebPage(url);
+        });
+        binding.applyNowBtn.setOnClickListener(view -> {
+            openWebPage(url);
+        });
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

@@ -1,66 +1,86 @@
 package com.instantloanguide.allloantips.fragments;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.instantloanguide.allloantips.R;
+import com.instantloanguide.allloantips.activities.TipsDetailActivity;
+import com.instantloanguide.allloantips.adapter.TipsAdapter;
+import com.instantloanguide.allloantips.databinding.FragmentTipsBinding;
+import com.instantloanguide.allloantips.models.TipsClickInterface;
+import com.instantloanguide.allloantips.models.TipsModel;
+import com.instantloanguide.allloantips.models.TipsModelList;
+import com.instantloanguide.allloantips.models.TipsViewModel;
+import com.instantloanguide.allloantips.utils.CommonMethods;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TipsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class TipsFragment extends Fragment {
+public class TipsFragment extends Fragment implements TipsClickInterface {
+    FragmentTipsBinding binding;
+    TipsAdapter tipsAdapter;
+    RecyclerView tipsRecyclerView;
+    Dialog loadingDialog;
+    TipsViewModel tipsViewModel;
+    FirebaseAnalytics firebaseAnalytics;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentTipsBinding.inflate(getLayoutInflater());
+        tipsRecyclerView = binding.tipsRecyclerView;
+        tipsViewModel = new ViewModelProvider(this).get(TipsViewModel.class);
+        tipsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        tipsRecyclerView.setHasFixedSize(true);
+        loadingDialog = CommonMethods.getDialog(requireContext());
+        loadingDialog.show();
+        setTipsData(requireActivity());
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            setTipsData(requireActivity());
+            binding.swipeRefresh.setRefreshing(false);
+        });
 
-    public TipsFragment() {
-        // Required empty public constructor
+        return binding.getRoot();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TipsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TipsFragment newInstance(String param1, String param2) {
-        TipsFragment fragment = new TipsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void setTipsData(FragmentActivity requireActivity) {
+        tipsAdapter = new TipsAdapter(requireActivity,this);
+        tipsRecyclerView.setAdapter(tipsAdapter);
+        tipsViewModel.getAllTips().observe(requireActivity, tipsModelList -> {
+            if (!tipsModelList.getData().isEmpty()){
+                tipsAdapter.updateList(tipsModelList.getData());
+                loadingDialog.dismiss();
+            }
+        });
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public void onClicked(TipsModel tipsModel) {
+        Intent intent = new Intent(requireActivity(), TipsDetailActivity.class);
+        intent.putExtra("id",tipsModel.getId());
+        intent.putExtra("title",tipsModel.getTipsTitle());
+        intent.putExtra("engDesc",tipsModel.getTipsEngDesc());
+        intent.putExtra("hinDesc",tipsModel.getTipsHinDesc());
+        startActivity(intent);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tips, container, false);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tipsModel.getId());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tipsModel.getTipsTitle());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "TIPS LIST");
+        firebaseAnalytics.logEvent("Clicked_Tips_Items", bundle);
+
     }
 }
