@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -13,6 +14,9 @@ import androidx.core.content.ContextCompat;
 
 import com.instantloanguide.allloantips.BuildConfig;
 import com.instantloanguide.allloantips.R;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class CommonMethods {
 
@@ -64,6 +68,37 @@ public class CommonMethods {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    public static void whatsApp(Context context) throws UnsupportedEncodingException, PackageManager.NameNotFoundException {
+        String contact = "+91 9411902490"; // use country code with your phone number
+        String url = "https://api.whatsapp.com/send?phone=" + contact + "&text=" + URLEncoder.encode("Hello, I need some help regarding ", "UTF-8");
+        try {
+            PackageManager pm = context.getPackageManager();
+            pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setData(Uri.parse(url));
+            context.startActivity(i);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                pm.getPackageInfo("com.whatsapp.w4b", PackageManager.GET_ACTIVITIES);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            } catch (PackageManager.NameNotFoundException exception) {
+                e.printStackTrace();
+                Toast.makeText(context, "WhatsApp is not installed on this Device.", Toast.LENGTH_SHORT).show();
+
+            }
+
+//            whatsApp(context, "com.whatsapp.w4b");
+        }
+
 
     }
 }

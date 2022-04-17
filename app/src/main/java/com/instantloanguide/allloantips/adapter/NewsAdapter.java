@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.instantloanguide.allloantips.R;
+import com.instantloanguide.allloantips.databinding.AdLayoutBinding;
 import com.instantloanguide.allloantips.models.NewsClickInterface;
 import com.instantloanguide.allloantips.models.NewsModel;
 
@@ -20,7 +21,9 @@ import java.util.List;
 
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
-
+    private static final int ITEM_VIEW = 0;
+    private static final int AD_VIEW = 1;
+    private static final int ITEM_FEED_COUNT = 5;
     List<NewsModel> newsModels = new ArrayList<>();
     Context context;
     NewsClickInterface newsClickInterface;
@@ -30,9 +33,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         this.newsClickInterface = newsClickIterface;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if ((position + 1) % ITEM_FEED_COUNT == 0) {
+            return AD_VIEW;
+        }
+        return ITEM_VIEW;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == ITEM_VIEW){
+            View view = LayoutInflater.from(context).inflate(R.layout.news_layout, parent, false);
+            return new ViewHolder(view);
+        }else if (viewType == AD_VIEW){
+            View view = LayoutInflater.from(context).inflate(R.layout.ad_layout,parent,false);
+            return new AdViewHolder(view);
+        }
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.news_layout, parent, false));
     }
 
@@ -68,5 +86,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
+    public static class AdViewHolder extends RecyclerView.ViewHolder{
+        AdLayoutBinding binding;
 
+        public AdViewHolder(@NonNull View itemView) {
+            super(itemView);
+            binding = AdLayoutBinding.bind(itemView);
+        }
+
+        private void bindAdData(){
+            AdLoader.Builder builder = new
+        }
+    }
 }

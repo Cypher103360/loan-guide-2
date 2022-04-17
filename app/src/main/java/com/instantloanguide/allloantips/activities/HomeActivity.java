@@ -73,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void Set_Visibility_OFF() {
         binding.lottieHome.setVisibility(View.VISIBLE);
         binding.tvNotConnected.setVisibility(View.VISIBLE);
+        binding.lottieContact.setVisibility(View.GONE);
         binding.viewPager.setVisibility(View.GONE);
         binding.tabs.setVisibility(View.GONE);
         disableNavItems();
@@ -81,6 +82,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void Set_Visibility_ON() {
         binding.lottieHome.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.GONE);
+        binding.lottieContact.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
         enableNavItems();
@@ -134,6 +136,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter.addFragment(new TipsFragment(), "Tips");
 
 
+        binding.lottieContact.setOnClickListener(view -> {
+            try {
+                CommonMethods.whatsApp(HomeActivity.this);
+            } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void navigationDrawer() {
@@ -194,7 +203,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
             case R.id.nav_contact:
-              CommonMethods.contactUs(HomeActivity.this);
+                try {
+                    CommonMethods.whatsApp(HomeActivity.this);
+                } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.nav_rate:
                 FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
