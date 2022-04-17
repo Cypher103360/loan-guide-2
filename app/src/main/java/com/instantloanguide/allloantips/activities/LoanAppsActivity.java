@@ -10,6 +10,8 @@ import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.adapter.LoanAppsAdapter;
 import com.instantloanguide.allloantips.databinding.ActivityLoanAppsBinding;
 import com.instantloanguide.allloantips.models.LoanAppModel;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
         binding.actTitle.setText(title);
+
+        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
 
         binding.backBtn.setOnClickListener(view -> {
             onBackPressed();
@@ -127,6 +132,7 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
 
     @Override
     public void onBackPressed() {
+        Ads.destroyBanner();
         super.onBackPressed();
         finish();
     }

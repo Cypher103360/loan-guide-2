@@ -26,7 +26,9 @@ import com.instantloanguide.allloantips.models.NewsClickInterface;
 import com.instantloanguide.allloantips.models.NewsModel;
 import com.instantloanguide.allloantips.models.NewsModelList;
 import com.instantloanguide.allloantips.models.NewsViewModel;
+import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class NewsFragment extends Fragment implements NewsClickInterface {
     FragmentNewsBinding binding;
@@ -47,6 +49,9 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setNewsData(requireActivity());
+        ShowAds showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
+
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -73,6 +78,7 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     @Override
     public void onClicked(NewsModel newsModel) {
 
+        Ads.destroyBanner();
         Intent intent = new Intent(getContext(), NewsDetailsActivity.class);
         intent.putExtra("id",newsModel.getId());
         intent.putExtra("image",newsModel.getNewsImg());

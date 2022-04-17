@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityAppDetailsBinding;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class AppDetailsActivity extends AppCompatActivity {
     ActivityAppDetailsBinding binding;
@@ -25,6 +27,9 @@ public class AppDetailsActivity extends AppCompatActivity {
         binding.backBtn.setOnClickListener(view -> {
             onBackPressed();
         });
+
+        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
 
         image = getIntent().getIntExtra("img",0);
         name = getIntent().getStringExtra("name");
@@ -53,6 +58,7 @@ public class AppDetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Ads.destroyBanner();
         finish();
     }
 

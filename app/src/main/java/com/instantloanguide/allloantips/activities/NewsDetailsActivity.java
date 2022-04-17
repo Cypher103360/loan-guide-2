@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityNewsDetailsBinding;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class NewsDetailsActivity extends AppCompatActivity {
     ActivityNewsDetailsBinding binding;
@@ -36,6 +38,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
         newsDescTv = binding.newsDesc;
         newsImageView = binding.newsImg;
 
+        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
 
         id = getIntent().getStringExtra("id");
         newsImage = getIntent().getStringExtra("image");
@@ -87,5 +91,6 @@ public class NewsDetailsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+        Ads.destroyBanner();
     }
 }

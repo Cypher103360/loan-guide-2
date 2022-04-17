@@ -1,20 +1,22 @@
 package com.instantloanguide.allloantips.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.instantloanguide.allloantips.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.instantloanguide.allloantips.databinding.ActivityLoanAmountBinding;
+import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class LoanAmountActivity extends AppCompatActivity {
 
     ActivityLoanAmountBinding binding;
     String id;
+    ShowAds showAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +29,17 @@ public class LoanAmountActivity extends AppCompatActivity {
             onBackPressed();
         });
 
+         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        getLifecycle().addObserver(showAds);
+
         binding.submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(binding.amountEdt.getText().toString())){
+                Ads.destroyBanner();
+                showAds.showInterstitialAds(LoanAmountActivity.this);
+                if (TextUtils.isEmpty(binding.amountEdt.getText().toString())) {
                     Toast.makeText(LoanAmountActivity.this, "Please enter your amount", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Intent intent = new Intent(LoanAmountActivity.this, CheckDocumentActivity.class);
                     intent.putExtra("id", id);
                     startActivity(intent);
@@ -43,6 +50,7 @@ public class LoanAmountActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Ads.destroyBanner();
         super.onBackPressed();
         finish();
     }

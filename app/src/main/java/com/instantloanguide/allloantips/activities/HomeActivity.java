@@ -39,6 +39,7 @@ import com.instantloanguide.allloantips.fragments.NewsFragment;
 import com.instantloanguide.allloantips.fragments.TipsFragment;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.MyReceiver;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.io.UnsupportedEncodingException;
 
@@ -101,6 +102,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
         drawerLayout = binding.drawerLayout;
+        ShowAds showAds = new ShowAds(this, binding.topAdView, null);
+        getLifecycle().addObserver(showAds);
 
 
         // Setting Version Code
