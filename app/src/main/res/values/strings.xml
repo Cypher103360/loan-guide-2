@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Loan Guide</string>
+    <string name="app_name">Instant Loan Guide</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
@@ -15,7 +15,11 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="hindi">Hin</string>
     <string name="english">Eng</string>
-
+    <string name="disclaimer">Disclaimer</string>
+    <string name="this_instant_loan_guide_application_only_provides_a_guideline_for_how_to_apply_for_loan_on_mobile_and_not_give_any_type_of_loan_to_you_we_are_not_asking_the_applicant_to_pay_any_money_for_the_loan">This Instant Loan Guide Application Only Provides a Guideline for How to apply for loan on mobile and not give any type of loan to you. We are not Asking the Applicant to Pay any Money for the loan.</string>
+    <string name="ok">OK</string>
     <string name="app_id">ca-app-pub-1306982071797241~2630782596</string>
+    <string name="todo">todo</string>
+    <string name="ad">AD</string>
 
 </resources>

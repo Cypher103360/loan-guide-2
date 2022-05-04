@@ -90,7 +90,7 @@ public class MyApp extends Application {
                             Paper.book().write(Prevalent.bannerAds, ads.getBanner());
                             Paper.book().write(Prevalent.interstitialAds, ads.getInterstitial());
                             Paper.book().write(Prevalent.networkName, ads.getNetworkName());
-                            new AppOpenManager(mInstance, Paper.book().read(Prevalent.openAppAds), mInstance);
+//                            new AppOpenManager(mInstance, Paper.book().read(Prevalent.openAppAds), mInstance);
 
                             try {
                                 ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -155,3 +155,5 @@ public class MyApp extends Application {
         }
     }
 }
+
+// jks file password:  12345

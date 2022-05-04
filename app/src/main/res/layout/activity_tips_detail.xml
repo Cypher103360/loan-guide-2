@@ -86,7 +86,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adView_top">
@@ -106,34 +106,34 @@
                 android:id="@+id/tipsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Tips Title"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:padding="8dp"
                 android:textStyle="bold"
-                android:text="Tips Title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/tipsDesc"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="18sp"-->
-<!--                android:padding="8dp"-->
-<!--                android:text="this is the description of tips"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tipsTitle" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/tipsDesc"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textSize="18sp"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text="this is the description of tips"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/tipsTitle" />-->
 
             <WebView
                 android:id="@+id/tips_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:layout_marginTop="8dp"
+                android:padding="8dp"
                 android:scrollbars="vertical"
                 android:text="@string/app_name"
                 android:textAlignment="viewStart"
@@ -165,10 +165,7 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    </ScrollView>
     <RelativeLayout
         android:id="@+id/adView_bottom"
         android:layout_width="match_parent"
@@ -179,6 +176,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

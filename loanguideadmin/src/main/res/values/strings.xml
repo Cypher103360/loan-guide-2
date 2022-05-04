@@ -23,4 +23,6 @@
     <string name="banner">Banner</string>
     <string name="interstitial">Interstitial</string>
     <string name="network_name">Network Name</string>
+    <string name="ad_attribution">AD</string>
+
 </resources>

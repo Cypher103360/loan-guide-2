@@ -30,6 +30,9 @@ import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewsFragment extends Fragment implements NewsClickInterface {
     FragmentNewsBinding binding;
     NewsAdapter newsAdapter;
@@ -37,7 +40,8 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     Dialog loadingDialog;
     NewsViewModel newsViewModel;
     FirebaseAnalytics firebaseAnalytics;
-
+    ShowAds showAds;
+    List<NewsModel> newsModels;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,7 +53,7 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setNewsData(requireActivity());
-        ShowAds showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
+         showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -64,11 +68,14 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     }
 
     public void setNewsData(Activity context) {
+        newsModels= new ArrayList<>();
         newsAdapter = new NewsAdapter(context,this);
         newsRecyclerView.setAdapter(newsAdapter);
         newsViewModel.getAllNews().observe(requireActivity(), newsModelList -> {
             if (!newsModelList.getData().isEmpty()){
-                newsAdapter.updateList(newsModelList.getData());
+                newsModels.clear();
+                newsModels.addAll(newsModelList.getData());
+                newsAdapter.updateList(newsModels);
                 loadingDialog.dismiss();
             }
         });
@@ -79,6 +86,7 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     public void onClicked(NewsModel newsModel) {
 
         Ads.destroyBanner();
+        showAds.showInterstitialAds(requireActivity());
         Intent intent = new Intent(getContext(), NewsDetailsActivity.class);
         intent.putExtra("id",newsModel.getId());
         intent.putExtra("image",newsModel.getNewsImg());

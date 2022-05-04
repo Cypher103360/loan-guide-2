@@ -3,12 +3,18 @@ package com.instantloanguide.allloantips.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityCategoryBinding;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.ShowAds;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
     
@@ -75,13 +81,29 @@ public class CategoryActivity extends AppCompatActivity {
             intent.putExtra("id","studentLoan");
             startActivity(intent);
         });
-//        binding.emiCalculatorCard.setOnClickListener(view -> {
-//            Intent intent = new Intent();
-//            intent.setAction(Intent.ACTION_MAIN);
-//            intent.addCategory(Intent.CATEGORY_APP_CALCULATOR);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//        });
+        binding.emiCalculatorCard.setOnClickListener(view -> {
+            ArrayList<HashMap<String,Object>> items =new ArrayList<>();
+
+            final PackageManager pm = getPackageManager();
+            List<PackageInfo> packs = pm.getInstalledPackages(0);
+            for (PackageInfo pi : packs) {
+                if( pi.packageName.toLowerCase().contains("calcul")){
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("appName", pi.applicationInfo.loadLabel(pm));
+                    map.put("packageName", pi.packageName);
+                    items.add(map);
+                }
+            }
+            if(items.size()>=1){
+                String packageName = (String) items.get(0).get("packageName");
+                Intent i = pm.getLaunchIntentForPackage(packageName);
+                if (i != null)
+                    startActivity(i);
+            }
+            else{
+                // Application not found
+            }
+        });
     }
 
     @Override

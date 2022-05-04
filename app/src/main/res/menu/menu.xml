@@ -37,7 +37,12 @@
             android:iconTint="#6200EA"
             android:title="@string/privacy_policy"
             tools:targetApi="o" />
-
+        <item
+            android:id="@+id/nav_disclaimer"
+            android:icon="@drawable/ic_baseline_info_24"
+            android:iconTint="#6200EA"
+            android:title="@string/disclaimer"
+            tools:targetApi="o" />
     </group>
 
 </menu>

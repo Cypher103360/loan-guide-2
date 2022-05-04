@@ -161,15 +161,17 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
                         map.put("id", itemId);
                         map.put("title", "News");
                         map.put("img", "news_images/" + imgPath);
-                        deleteItem(map,"News");
+                        deleteItem(map, "News");
 
                         break;
                     case "Update Tips":
                         itemId = tipsModels.get(viewHolder.getAdapterPosition()).getId();
 
+                        tipsModels.remove(viewHolder.getAdapterPosition());
+                        tipsAdapter.updateList(tipsModels);
                         map.put("id", itemId);
                         map.put("title", "Tips");
-                        deleteItem(map,"Tips");
+                        deleteItem(map, "Tips");
 
                         break;
 
@@ -180,7 +182,8 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
 
 
     }
-    private void deleteItem(Map<String, String> map , String key) {
+
+    private void deleteItem(Map<String, String> map, String key) {
         if (key.equals("Tips")) {
             call = apiInterface.deleteTips(map);
         } else if (key.equals("News")) {
@@ -206,6 +209,7 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
             }
         });
     }
+
     private void fetchTips() {
         tipsViewModel.getAllTips().observe(this, tipsModelList -> {
             if (tipsModelList != null) {

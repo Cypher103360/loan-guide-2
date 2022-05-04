@@ -65,16 +65,16 @@ public class MainActivity extends AppCompatActivity {
         binding.splashContainer.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_500));
 
 
-//        if (count == 2) {
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
-//                    finish();
-//
-//                }
-//            }, 3000);
-//        }
+        if (count == 2) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+                    finish();
+
+                }
+            }, 3000);
+        }
 
     }
 

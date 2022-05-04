@@ -30,6 +30,10 @@ public class ShowAds implements LifecycleObserver {
         bottomAdview = AdViewBottom;
     }
 
+    public ShowAds() {
+
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onStart() {
         showBanner(context, topAdview, bottomAdview);
