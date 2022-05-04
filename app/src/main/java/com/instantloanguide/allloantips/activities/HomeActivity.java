@@ -3,6 +3,7 @@ package com.instantloanguide.allloantips.activities;
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,16 +19,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -223,9 +228,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_share:
                 CommonMethods.shareApp(this);
                 break;
+            case R.id.nav_disclaimer:
+                showDisclaimer();
+                break;
             default:
         }
         return true;
+    }
+
+    private void showDisclaimer() {
+        if (drawerLayout.isDrawerVisible(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else drawerLayout.openDrawer(GravityCompat.START);
+        Dialog loadingDialog;
+        loadingDialog = new Dialog(this);
+        loadingDialog.setContentView(R.layout.disclaimer_layout);
+        loadingDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        loadingDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.item_bg2));
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
+
+        TextView textView = loadingDialog.findViewById(R.id.ok);
+        textView.setOnClickListener(view -> loadingDialog.dismiss());
     }
 
     public void disableNavItems() {
@@ -280,5 +304,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle(R.string.app_name)
+                .setIcon(R.mipmap.ic_launcher)
+                .setMessage("Do You Really Want To Exit?\nAlso Rate Us 5 Star.")
+                .setNeutralButton("CANCEL", (dialog, which) -> {
+                });
+
+
+        builder.setNegativeButton("RATE APP", (dialog, which) -> CommonMethods.rateApp(getApplicationContext()))
+                .setPositiveButton("OK!!", (dialog, which) -> {
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                    moveTaskToBack(true);
+                    System.exit(0);
+
+                });
+        builder.show();
     }
 }

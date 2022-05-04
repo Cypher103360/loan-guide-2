@@ -30,6 +30,9 @@ import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TipsFragment extends Fragment implements TipsClickInterface {
     FragmentTipsBinding binding;
     TipsAdapter tipsAdapter;
@@ -37,7 +40,8 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
     Dialog loadingDialog;
     TipsViewModel tipsViewModel;
     FirebaseAnalytics firebaseAnalytics;
-
+    ShowAds showAds;
+    List<TipsModel> tipsModels;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTipsBinding.inflate(getLayoutInflater());
@@ -48,7 +52,7 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setTipsData(requireActivity());
-        ShowAds showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
+         showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         binding.swipeRefresh.setOnRefreshListener(() -> {
@@ -60,11 +64,14 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
     }
 
     private void setTipsData(FragmentActivity requireActivity) {
+        tipsModels = new ArrayList<>();
         tipsAdapter = new TipsAdapter(requireActivity,this);
         tipsRecyclerView.setAdapter(tipsAdapter);
         tipsViewModel.getAllTips().observe(requireActivity, tipsModelList -> {
             if (!tipsModelList.getData().isEmpty()){
-                tipsAdapter.updateList(tipsModelList.getData());
+                tipsModels.clear();
+                tipsModels.addAll(tipsModelList.getData());
+                tipsAdapter.updateList(tipsModels);
                 loadingDialog.dismiss();
             }
         });
@@ -73,6 +80,8 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
     @Override
     public void onClicked(TipsModel tipsModel) {
         Ads.destroyBanner();
+        showAds.showInterstitialAds(requireActivity());
+
         Intent intent = new Intent(requireActivity(), TipsDetailActivity.class);
         intent.putExtra("id",tipsModel.getId());
         intent.putExtra("title",tipsModel.getTipsTitle());

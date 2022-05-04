@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.1325" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/drawable/item_bg2.xml" value="0.1325" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_app_details.xml" value="0.22" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_category.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_check_document.xml" value="0.19895833333333332" />
@@ -18,13 +20,16 @@
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_tips_detail.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_welcome.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/app_item_layout.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/disclaimer_layout.xml" value="0.2" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_home.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_loan_type.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_news.xml" value="0.305111821086262" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_tips.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/header.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/native_ad_layout.xml" value="0.25" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/news_layout.xml" value="0.19895833333333332" />
-        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/tips_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/tips_layout.xml" value="0.25" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/menu/menu.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/drawable/back_icon_bg.xml" value="0.1295" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/drawable/item_bg.xml" value="0.1325" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/loanguideadmin/src/main/res/layout/activity_edit.xml" value="0.19895833333333332" />
@@ -59,7 +64,6 @@
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_purpose_for_loan.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_salary_amount.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/activity_welcome.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/ad_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/app_item_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_home.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_loan_type.xml" value="0.25" />
