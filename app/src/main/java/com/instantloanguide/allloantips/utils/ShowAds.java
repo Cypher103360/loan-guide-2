@@ -19,7 +19,6 @@ import io.paperdb.Paper;
 
 public class ShowAds implements LifecycleObserver {
 
-    boolean checkAds;
     Ads ads = new Ads();
     RelativeLayout topAdview, bottomAdview;
     Activity context;
@@ -44,7 +43,6 @@ public class ShowAds implements LifecycleObserver {
         if ("AdmobWithMeta".equals(Paper.book().read(Prevalent.networkName))) {
             Log.d(TAG, "AdmobWithMeta");
             ads.admobInterstitialAd(context, Paper.book().read(Prevalent.interstitialAds));
-
 
         } else if ("IronSourceWithMeta".equals(Paper.book().read(Prevalent.networkName))) {
             Log.d(TAG, "IronSourceWithMeta");
