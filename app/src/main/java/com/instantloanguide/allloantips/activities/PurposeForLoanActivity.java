@@ -37,6 +37,7 @@ public class PurposeForLoanActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         binding.homeLoan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
