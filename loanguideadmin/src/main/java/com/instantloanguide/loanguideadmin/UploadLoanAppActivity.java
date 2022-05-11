@@ -15,21 +15,22 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.instantloanguide.loanguideadmin.adapters.LoanAppsAdapter;
 import com.instantloanguide.loanguideadmin.databinding.ActivityUploadLoanAppBinding;
 import com.instantloanguide.loanguideadmin.databinding.EditLoanAppDataLayoutBinding;
 import com.instantloanguide.loanguideadmin.databinding.LoanAppLayoutBinding;
 import com.instantloanguide.loanguideadmin.models.LoanAppModel;
+import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.services.ApiInterface;
 import com.instantloanguide.loanguideadmin.services.ApiWebServices;
 import com.instantloanguide.loanguideadmin.utils.CommonMethods;
-import com.instantloanguide.loanguideadmin.viewModels.LoanAppModelFactory;
 import com.instantloanguide.loanguideadmin.viewModels.LoanAppViewModel;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,11 +56,11 @@ public class UploadLoanAppActivity extends AppCompatActivity implements LoanApps
     Bitmap bitmap;
     Map<String, String> map;
     ApiInterface apiInterface;
-    List<LoanAppModel> loanAppModels;
+    List<LoanAppModel> loanAppModels = new ArrayList<>();
     LoanAppsAdapter loanAppsAdapter;
     LoanAppViewModel loanAppViewModel;
     ItemTouchHelper.SimpleCallback simpleCallback;
-
+    MaterialAlertDialogBuilder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,10 +143,7 @@ public class UploadLoanAppActivity extends AppCompatActivity implements LoanApps
 
         // set data
         layoutBinding.titleTv.setText(loanId);
-        layoutBinding.selectImage.setOnClickListener(v -> {
-            launcher.launch("image/*");
-
-        });
+        layoutBinding.selectImage.setOnClickListener(v -> launcher.launch("image/*"));
 
         layoutBinding.okBtn.setOnClickListener(view -> {
             String title, intrest_rate, amount, s_age, reqment, s_url;
@@ -198,10 +197,10 @@ public class UploadLoanAppActivity extends AppCompatActivity implements LoanApps
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(UploadLoanAppActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UploadLoanAppActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(UploadLoanAppActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UploadLoanAppActivity.this, Objects.requireNonNull(response.body()).getError(), Toast.LENGTH_SHORT).show();
 
                 }
                 loadingDialog.dismiss();
@@ -238,9 +237,11 @@ public class UploadLoanAppActivity extends AppCompatActivity implements LoanApps
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         loanAppDataLayoutBinding.editRV.setLayoutManager(layoutManager);
-        loanAppDataLayoutBinding.backBtn.setOnClickListener(view -> loanAppDataLayoutDialog.dismiss());
+        loanAppDataLayoutBinding.backBtn.setOnClickListener(view -> {
+            loanAppDataLayoutDialog.dismiss();
+            loanAppModels.clear();
+        });
 
-        loanAppModels = new ArrayList<>();
         loanAppsAdapter = new LoanAppsAdapter(this, this);
         loanAppDataLayoutBinding.editRV.setAdapter(loanAppsAdapter);
         fetchData(loanId);
@@ -296,23 +297,184 @@ public class UploadLoanAppActivity extends AppCompatActivity implements LoanApps
     }
 
     private void fetchData(String loanId) {
-        loanAppViewModel = new ViewModelProvider(this, new LoanAppModelFactory(loanId, getApplication())).get(LoanAppViewModel.class);
+//        Toast.makeText(this, "LoanId: " + loanId, Toast.LENGTH_SHORT).show();
+//
+//        loanAppViewModel = new ViewModelProvider(this, new LoanAppModelFactory(loanId, getApplication())).get(LoanAppViewModel.class);
+//        loanAppViewModel.getLoanAppDetails().observe(this, loanAppModelList -> {
+//            if (loanAppModelList != null) {
+//                loanAppModels.clear();
+//                loanAppModels.addAll(loanAppModelList.getData());
+//                for (LoanAppModel loan : loanAppModels) {
+//                    Log.d("ContentValue", loan.getTitle());
+//                }
+//            } else {
+//                Toast.makeText(this, "List is empty!", Toast.LENGTH_SHORT).show();
+//            }
+//            loanAppsAdapter.updateLoanAppList(loanAppModels);
+//
+//            loadingDialog.dismiss();
+//
+//        });
 
-        loanAppViewModel.getLoanAppDetails().observe(this, loanAppModelList -> {
-            if (loanAppModelList != null) {
-                loanAppModels.clear();
-                loanAppModels.addAll(loanAppModelList.getData());
-                loanAppsAdapter.updateLoanAppList(loanAppModels);
-            } else {
-                Toast.makeText(this, "List is empty!", Toast.LENGTH_SHORT).show();
+
+        Call<LoanAppModelList> call = apiInterface.fetchLoanAppDetails(loanId);
+        call.enqueue(new Callback<LoanAppModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<LoanAppModelList> call, @NonNull Response<LoanAppModelList> response) {
+                if (response.isSuccessful()) {
+                    if (Objects.requireNonNull(response.body()).getData() != null) {
+                        loanAppModels.clear();
+                        loanAppModels.addAll(response.body().getData());
+                        for (LoanAppModel loan : loanAppModels) {
+                            Log.d("ContentValue", loan.getTitle());
+                        }
+                    } else {
+                        Toast.makeText(UploadLoanAppActivity.this, "List is empty!", Toast.LENGTH_SHORT).show();
+                    }
+                    loanAppsAdapter.updateLoanAppList(loanAppModels);
+
+                    loadingDialog.dismiss();
+
+                }
             }
-            loadingDialog.dismiss();
 
+            @Override
+            public void onFailure(@NonNull Call<LoanAppModelList> call, @NonNull Throwable t) {
+
+            }
         });
+//        return loanAppModelListMutableLiveData;
+
     }
 
     @Override
     public void onItemClicked(LoanAppModel loanAppModel, int position) {
+        builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Edit your Item")
+                .setMessage("Edit")
+                .setNeutralButton("CANCEL", (dialog1, which) -> {
 
+                });
+        builder.setPositiveButton("Edit", (dialog, which) -> updateData(loanAppModel.getLoanId(), loanAppModel));
+        builder.show();
+
+    }
+
+    private void updateData(String loanId, LoanAppModel loanAppModel) {
+
+        dialog = new Dialog(this);
+        layoutBinding = LoanAppLayoutBinding.inflate(getLayoutInflater());
+        dialog.setContentView(layoutBinding.getRoot());
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        // handle clicks
+        layoutBinding.backBtnImg.setOnClickListener(view -> dialog.dismiss());
+
+        // set data
+        layoutBinding.titleTv.setText(loanId);
+        layoutBinding.selectImage.setOnClickListener(v -> launcher.launch("image/*"));
+
+        layoutBinding.itemTitle.setText(loanAppModel.getTitle());
+        layoutBinding.interestRate.setText(loanAppModel.getInterest());
+        layoutBinding.amount.setText(loanAppModel.getAmount());
+        layoutBinding.age.setText(loanAppModel.getAge());
+        layoutBinding.requirement.setText(loanAppModel.getRequirement());
+        layoutBinding.url.setText(loanAppModel.getUrl());
+        Glide.with(this).load("https://gedgetsworld.in/Loan_App/loan_app_images/" + loanAppModel.getImg()).into(layoutBinding.selectImage);
+        encodedImage = loanAppModel.getImg();
+
+
+        layoutBinding.okBtn.setOnClickListener(view -> {
+            String title, interest_rate, amount, s_age, reqment, s_url;
+
+            title = layoutBinding.itemTitle.getText().toString().trim();
+            interest_rate = layoutBinding.interestRate.getText().toString().trim();
+            amount = layoutBinding.amount.getText().toString().trim();
+            s_age = layoutBinding.age.getText().toString().trim();
+            reqment = layoutBinding.requirement.getText().toString().trim();
+            s_url = layoutBinding.url.getText().toString().trim();
+
+            if (encodedImage == null) {
+                Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+            } else if (TextUtils.isEmpty(title)) {
+                layoutBinding.itemTitle.setError("Title required!");
+            } else if (TextUtils.isEmpty(interest_rate)) {
+                layoutBinding.interestRate.setError("Field required!");
+            } else if (TextUtils.isEmpty(amount)) {
+                layoutBinding.amount.setError("Field required!");
+            } else if (TextUtils.isEmpty(s_age)) {
+                layoutBinding.age.setError("Field required!");
+            } else if (TextUtils.isEmpty(reqment)) {
+                layoutBinding.requirement.setError("Field required!");
+            } else if (TextUtils.isEmpty(s_url)) {
+                layoutBinding.url.setError("Field required!");
+            } else {
+                loadingDialog.show();
+
+                if (encodedImage.length() <= 150) {
+
+                    map.put("img", encodedImage);
+                    map.put("deleteImg", loanAppModel.getImg());
+                    map.put("title", title);
+                    map.put("interest", interest_rate);
+                    map.put("amount", amount);
+                    map.put("age", s_age);
+                    map.put("req", reqment);
+                    map.put("url", s_url);
+                    map.put("loanId", loanId);
+                    map.put("id", loanAppModel.getId());
+                    map.put("imgKey", "0");
+
+                    uploadUpdateData(map);
+
+                }
+
+                if (encodedImage.length() > 150) {
+                    map.put("img", encodedImage);
+                    map.put("deleteImg", loanAppModel.getImg());
+                    map.put("title", title);
+                    map.put("interest", interest_rate);
+                    map.put("amount", amount);
+                    map.put("age", s_age);
+                    map.put("req", reqment);
+                    map.put("url", s_url);
+                    map.put("loanId", loanId);
+                    map.put("id", loanAppModel.getId());
+                    map.put("imgKey", "1");
+                    uploadUpdateData(map);
+                }
+
+                loadingDialog.show();
+
+            }
+
+        });
+
+    }
+
+    private void uploadUpdateData(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateLoanAppsData(map);
+
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(UploadLoanAppActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+
+                    fetchData(map.get("loanId"));
+                }
+
+                loadingDialog.dismiss();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                loadingDialog.dismiss();
+            }
+        });
     }
 }
