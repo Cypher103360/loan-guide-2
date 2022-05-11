@@ -31,6 +31,9 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("update_news_api.php")
     Call<MessageModel> updateNews(@FieldMap Map<String, String> map);
+ @FormUrlEncoded
+    @POST("update_loan_app_data_api.php")
+    Call<MessageModel> updateLoanAppsData(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("update_tips_api.php")

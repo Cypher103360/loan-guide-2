@@ -43,23 +43,10 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        LoanAppModel loanAppModel = loanAppModelList.get(position);
         ((ItemViewHolder) holder).appName.setText(loanAppModelList.get(position).getTitle());
         Glide.with(context).load("https://gedgetsworld.in/Loan_App/loan_app_images/" + loanAppModelList.get(position).getImg()).into(((ItemViewHolder) holder).appIcon);
 
-        ((ItemViewHolder) holder).applyBtn.setOnClickListener(view -> {
-            loanAppInterface.onItemClicked(loanAppModelList.get(position), position);
-//            Intent intent = new Intent(context, AppDetailsActivity.class);
-//
-//            intent.putExtra("img", loanAppModel.getImg());
-//            intent.putExtra("name", loanAppModel.getTitle());
-//            intent.putExtra("interest", loanAppModel.getInterest());
-//            intent.putExtra("amount", loanAppModel.getAmount());
-//            intent.putExtra("age", loanAppModel.getAge());
-//            intent.putExtra("requirement", loanAppModel.getRequirement());
-//            intent.putExtra("url", loanAppModel.getUrl());
-//            context.startActivity(intent);
-        });
+        holder.itemView.setOnClickListener(view -> loanAppInterface.onItemClicked(loanAppModelList.get(position), position));
     }
 
 
