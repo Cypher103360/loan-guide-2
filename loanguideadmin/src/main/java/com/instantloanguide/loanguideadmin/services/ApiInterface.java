@@ -2,6 +2,7 @@ package com.instantloanguide.loanguideadmin.services;
 
 import com.instantloanguide.loanguideadmin.models.AdsModelList;
 import com.instantloanguide.loanguideadmin.models.BannerModelList;
+import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
@@ -64,4 +65,16 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("update_banner.php")
     Call<MessageModel> updateBanner(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("upload_loan_app_data.php")
+    Call<MessageModel> uploadLoanAppData(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_loan_app_details.php")
+    Call<LoanAppModelList> fetchLoanAppDetails(@Field("loanId") String id);
+
+    @FormUrlEncoded
+    @POST("delete_loan_app_details.php")
+    Call<MessageModel> deleteLoanAppData(@FieldMap Map<String, String> map);
 }
