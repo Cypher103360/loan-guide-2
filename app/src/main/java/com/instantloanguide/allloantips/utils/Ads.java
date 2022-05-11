@@ -192,7 +192,6 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
         AppLovinSdk.initializeSdk(context);
         AudienceNetworkAds.initialize(context);
 
-
         interstitialAd = new MaxInterstitialAd(interstitialId, context);
         interstitialAd.setListener(this);
         // Load the first ad

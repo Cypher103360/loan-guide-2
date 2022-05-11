@@ -11,11 +11,17 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LoanGuide"
         tools:targetApi="n">
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
+            android:name=".activities.SignUpActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.TipsDetailActivity"
             android:exported="false" />
@@ -76,10 +82,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id" />
-
-        <meta-data android:name="applovin.sdk.key"
-            android:value="ksHAcmHXHidLv2Z4I8Xh935-zmB22WK7W0Ir0MXJR5s8z0lo2qfryQBIiyh53bG5PquxI4RSHOZZubFpt0v2Qi"/>
-
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="ksHAcmHXHidLv2Z4I8Xh935-zmB22WK7W0Ir0MXJR5s8z0lo2qfryQBIiyh53bG5PquxI4RSHOZZubFpt0v2Qi" />
     </application>
 
 </manifest>

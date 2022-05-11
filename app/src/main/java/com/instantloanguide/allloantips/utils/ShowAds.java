@@ -91,7 +91,6 @@ public class ShowAds implements LifecycleObserver {
 
             } else if (bottomAdView != null) {
                 ads.showBannerAd(context, bottomAdView, Objects.requireNonNull(Paper.book().read(Prevalent.networkName)), Paper.book().read(Prevalent.bannerAds));
-
             }
         }
 

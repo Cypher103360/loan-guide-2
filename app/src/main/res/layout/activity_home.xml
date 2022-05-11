@@ -96,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabIndicatorColor="@color/black"
+                app:tabMode="scrollable"
                 app:tabTextColor="@color/black" />
 
         </com.google.android.material.appbar.AppBarLayout>

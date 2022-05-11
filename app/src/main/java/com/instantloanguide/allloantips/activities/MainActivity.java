@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -53,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void Set_Visibility_OFF() {
         binding.loadingLottie.setVisibility(View.GONE);
+        binding.logoImage.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.VISIBLE);
         binding.noInternetLottie.setVisibility(View.VISIBLE);
         binding.splashContainer.setBackgroundColor(0);
     }
 
     private void Set_Visibility_ON() {
+        binding.logoImage.setVisibility(View.VISIBLE);
         binding.loadingLottie.setVisibility(View.VISIBLE);
         binding.tvNotConnected.setVisibility(View.GONE);
         binding.noInternetLottie.setVisibility(View.GONE);
@@ -66,14 +70,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (count == 2) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
-                    finish();
+            new Handler().postDelayed(() -> {
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
+                if (account != null) {
+                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+                } else {
+                    startActivity(new Intent(MainActivity.this, SignUpActivity.class));
                 }
-            }, 3000);
+                finish();
+            }, 100);
         }
 
     }

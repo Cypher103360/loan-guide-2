@@ -35,7 +35,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 Ads.destroyBanner();
                 showAds.showInterstitialAds(this);
                 startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
-            }, 4000);
+                finish();
+            }, 100);
         });
 
         binding.contactBtn.setOnClickListener(view -> {

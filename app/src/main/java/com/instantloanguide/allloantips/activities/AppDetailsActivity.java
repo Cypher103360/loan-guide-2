@@ -1,21 +1,19 @@
 package com.instantloanguide.allloantips.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.ImageView;
 
-import com.instantloanguide.allloantips.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.instantloanguide.allloantips.databinding.ActivityAppDetailsBinding;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class AppDetailsActivity extends AppCompatActivity {
     ActivityAppDetailsBinding binding;
-    String name,interest,amount,age,requirement,url;
+    String name, interest, amount, age, requirement, url;
     int image;
 
     @Override
@@ -31,7 +29,7 @@ public class AppDetailsActivity extends AppCompatActivity {
         ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
-        image = getIntent().getIntExtra("img",0);
+        image = getIntent().getIntExtra("img", 0);
         name = getIntent().getStringExtra("name");
         interest = getIntent().getStringExtra("interest");
         amount = getIntent().getStringExtra("amount");
@@ -65,7 +63,8 @@ public class AppDetailsActivity extends AppCompatActivity {
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
         Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage
+        );
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }

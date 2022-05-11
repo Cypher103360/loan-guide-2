@@ -47,7 +47,6 @@ public class MyApp extends Application {
 
     public static void showAdmobBannerAd(Context context, RelativeLayout container) {
         MobileAds.initialize(context);
-
         id = Paper.book().read(Prevalent.admobBannerAds);
         AdRequest adRequest = new AdRequest.Builder().build();
         AdView adView = new AdView(context);

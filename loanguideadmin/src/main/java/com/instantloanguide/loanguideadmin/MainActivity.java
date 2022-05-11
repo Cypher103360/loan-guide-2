@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,14 +24,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.instantloanguide.loanguideadmin.databinding.ActivityMainBinding;
 import com.instantloanguide.loanguideadmin.databinding.NewsCardLayoutBinding;
 import com.instantloanguide.loanguideadmin.databinding.UploadImageDialogBinding;
 import com.instantloanguide.loanguideadmin.models.AdsModel;
 import com.instantloanguide.loanguideadmin.models.AdsModelList;
+import com.instantloanguide.loanguideadmin.models.BannerModel;
+import com.instantloanguide.loanguideadmin.models.BannerModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.services.ApiInterface;
 import com.instantloanguide.loanguideadmin.services.ApiWebServices;
+import com.instantloanguide.loanguideadmin.utils.CommonMethods;
 import com.instantloanguide.loanguideadmin.utils.Util;
 
 import java.io.ByteArrayOutputStream;
@@ -47,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String key, adIdTitle;
-    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog;
+    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog, bannerDialog;
     String titleTXt, englishTxt, hindiTxt;
-    String encodedImage;
+    String encodedImage, banTitle, banImg;
     Bitmap bitmap;
+    Button uploadBannerBtn;
     ActivityResultLauncher<String> launcher;
     Map<String, String> map;
     ActivityMainBinding binding;
@@ -59,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     Call<MessageModel> call;
     EditText admobKey, applovinAppKey, appOpenKey, admobBannerKey, nativeKey, banner, interstitial, networkName;
-    ImageView okBtn, cancelBtn;
+    ImageView okBtn, cancelBtn, bannerImageView;
     AdsModel adsModel;
     TextView title;
 
@@ -68,14 +75,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         init();
         setContentView(binding.getRoot());
+        loadingDialog = CommonMethods.loadingDialog(MainActivity.this);
 
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
             if (result != null) {
+
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result);
                     encodedImage = imageStore(bitmap);
                     if (key.equals("news")) {
                         cardLayoutBinding.selectImage.setImageURI(result);
+                    } else if (key.equals("banner")) {
+                        Glide.with(this).load(result).into(bannerImageView);
                     } else imageDialogBinding.selectImage.setImageURI(result);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -95,7 +106,26 @@ public class MainActivity extends AppCompatActivity {
             showNewsDialog("Upload Tips");
         });
         binding.uploadStripImage.setOnClickListener(view -> {
-            showStripBannerDialog();
+            String[] items = new String[]{"Loan Types", "News", "Tips"};
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+            builder.setTitle("Update Banners").setItems(items, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        map.put("title", "loan_types");
+                        updateBannerDialog(map);
+                        break;
+                    case 1:
+                        map.put("title", "news");
+                        updateBannerDialog(map);
+                        break;
+                    case 2:
+                        map.put("title", "tips");
+                        updateBannerDialog(map);
+                        break;
+                    default:
+                }
+            }).show();
+
         });
         binding.uploadAds.setOnClickListener(view -> {
             showUpdateAdsDialog("LoanGuide");
@@ -105,42 +135,103 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showStripBannerDialog() {
-        imageDialogBinding = UploadImageDialogBinding.inflate(getLayoutInflater());
-        stripBanDialog = new Dialog(this);
-        stripBanDialog.setContentView(imageDialogBinding.getRoot());
-        stripBanDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+    private void updateBannerDialog(Map<String, String> map) {
+        bannerDialog = new Dialog(MainActivity.this);
+        bannerDialog.setContentView(R.layout.upload_banner_layout);
+        bannerDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        stripBanDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ads_item_bg));
-        stripBanDialog.setCancelable(false);
-        stripBanDialog.show();
+        bannerDialog.setCancelable(false);
+        bannerDialog.show();
 
-        imageDialogBinding.selectImage.setOnClickListener(view -> {
-            launcher.launch("image/*");
-            key = "tips";
+        bannerImageView = bannerDialog.findViewById(R.id.selectBannerImage);
+        EditText edBannerUrl = bannerDialog.findViewById(R.id.banner_url);
+        uploadBannerBtn = bannerDialog.findViewById(R.id.upload_banner_btn);
+        Button cancelBtn = bannerDialog.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(view -> {
+            bannerDialog.dismiss();
+            encodedImage = "";
         });
-        imageDialogBinding.backBtn.setOnClickListener(view -> stripBanDialog.dismiss());
-        imageDialogBinding.okBtn.setOnClickListener(view -> {
-            titleTXt = imageDialogBinding.itemTitle.getText().toString();
 
-            if (encodedImage == null) {
-                Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+        bannerImageView.setOnClickListener(v -> {
+            launcher.launch("image/*");
+            key = "banner";
+        });
 
-            } else if (TextUtils.isEmpty(titleTXt)) {
-                imageDialogBinding.itemTitle.setError("Url required!");
+        Call<BannerModelList> call = apiInterface.fetchBanner(map);
+        call.enqueue(new Callback<BannerModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<BannerModelList> call, @NonNull Response<BannerModelList> response) {
 
-            } else {
-                loadingDialog.show();
-                map.put("img", encodedImage);
-                map.put("url", titleTXt);
-                uploadData(map, "Strip Banner");
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getData() != null) {
+
+                        for (BannerModel ban : response.body().getData()) {
+                            Glide.with(MainActivity.this).load("https://gedgetsworld.in/Loan_App/strip_banner_images/" + ban.getImage()).into(bannerImageView);
+                            edBannerUrl.setText(ban.getUrl());
+                            banTitle = ban.getTitle();
+                            banImg = ban.getImage();
+                            encodedImage = banImg;
+                            loadingDialog.dismiss();
+                        }
+                    }
+                }
             }
 
+            @Override
+            public void onFailure(@NonNull Call<BannerModelList> call, @NonNull Throwable t) {
 
+            }
+        });
+
+        uploadBannerBtn.setOnClickListener(v -> {
+            loadingDialog.show();
+            String bannerUrl = edBannerUrl.getText().toString().trim();
+
+            if (encodedImage.length() <= 100) {
+                map.put("title", banTitle);
+                map.put("img", encodedImage);
+                map.put("url", bannerUrl);
+                map.put("deleteImg", banImg);
+                map.put("imgKey", "0");
+
+
+                updateBannerData(map);
+            } else {
+                map.put("title", banTitle);
+                map.put("img", encodedImage);
+                map.put("url", bannerUrl);
+                map.put("deleteImg", banImg);
+                map.put("imgKey", "1");
+
+                updateBannerData(map);
+            }
         });
 
 
     }
+
+    private void updateBannerData(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateBanner(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
+                    bannerDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                loadingDialog.dismiss();
+            }
+        });
+    }
+
 
     private void init() {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -381,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }

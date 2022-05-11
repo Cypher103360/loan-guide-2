@@ -13,6 +13,7 @@
     <string name="version_1_1">Version -1</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
+
     <string name="hindi">Hin</string>
     <string name="english">Eng</string>
     <string name="disclaimer">Disclaimer</string>
@@ -21,5 +22,11 @@
     <string name="app_id">ca-app-pub-1306982071797241~2630782596</string>
     <string name="todo">todo</string>
     <string name="ad">AD</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="add_your_loan">Add Your Loan</string>
+    <string name="user_name">User Name</string>
+    <string name="loan_amount">Loan Amount</string>
+    <string name="loan_company_name">Loan Company Name</string>
+    <string name="finance_tips">Finance Tips</string>
 
 </resources>

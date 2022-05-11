@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Loan Guide Admin</string>
     <string name="upload_news">Upload News</string>
-    <string name="upload_strip_banner">Upload Strip Banner</string>
+    <string name="upload_strip_banner">Update Banner</string>
     <string name="upload_tips">Upload Tips</string>
     <string name="update_ads_ids">Update Ads Ids</string>
     <string name="enter_description">Enter English Description</string>
