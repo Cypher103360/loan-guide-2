@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView okBtn, cancelBtn, bannerImageView;
     AdsModel adsModel;
     TextView title;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,17 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.editBtn.setOnClickListener(view -> {
             startActivity(new Intent(this, EditActivity.class));
+        });
+
+        binding.uploadLoanAppBtn.setOnClickListener(view -> {
+            intent = new Intent(this, UploadLoanAppActivity.class);
+            intent.putExtra("key", "upload");
+            startActivity(intent);
+        });
+        binding.showLoanAppBtn.setOnClickListener(view -> {
+            intent = new Intent(this, UploadLoanAppActivity.class);
+            intent.putExtra("key", "show");
+            startActivity(intent);
         });
     }
 

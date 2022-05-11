@@ -1,8 +1,12 @@
 package com.instantloanguide.loanguideadmin.services;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.instantloanguide.loanguideadmin.models.LoanAppModel;
+import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
 import com.instantloanguide.loanguideadmin.models.TipsModel;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
@@ -18,6 +22,7 @@ public class Repository {
 
     MutableLiveData<NewsModelList> newsModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<TipsModelList> tipsModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<LoanAppModelList> loanAppModelListMutableLiveData = new MutableLiveData<>();
 
 
     public Repository() {
@@ -48,7 +53,8 @@ public class Repository {
             }
         });
         return newsModelListMutableLiveData;
-    }public MutableLiveData<TipsModelList> getTipsModelListMutableLiveData(){
+    }
+    public MutableLiveData<TipsModelList> getTipsModelListMutableLiveData(){
         Call<TipsModelList> call = apiInterface.getAllTips();
         call.enqueue(new Callback<TipsModelList>() {
             @Override
@@ -65,6 +71,23 @@ public class Repository {
             }
         });
         return tipsModelListMutableLiveData;
+    }public MutableLiveData<LoanAppModelList> getLoanAppModelListMutableLiveData(String id){
+        Call<LoanAppModelList> call = apiInterface.fetchLoanAppDetails(id);
+        call.enqueue(new Callback<LoanAppModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<LoanAppModelList> call, @NonNull Response<LoanAppModelList> response) {
+
+                if (response.isSuccessful()){
+                    loanAppModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoanAppModelList> call,@NonNull Throwable t) {
+
+            }
+        });
+        return loanAppModelListMutableLiveData;
     }
 
 

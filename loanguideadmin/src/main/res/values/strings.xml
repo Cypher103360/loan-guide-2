@@ -10,7 +10,6 @@
     <string name="upload">Upload</string>
     <string name="cancel">Cancel</string>
     <string name="todo">TODO</string>
-    <string name="enter_url">Enter Url</string>
     <string name="edit_data">Edit Data</string>
     <string name="update_news">Update News</string>
     <string name="update_tips">update Tips</string>
@@ -24,5 +23,18 @@
     <string name="interstitial">Interstitial</string>
     <string name="network_name">Network Name</string>
     <string name="ad_attribution">AD</string>
+    <string name="upload_loan_app_data">Upload Loan App Data</string>
+    <string name="personal_loan">Personal Loan</string>
+    <string name="bank_loan">Bank Loan</string>
+    <string name="business_loan">Business Loan</string>
+    <string name="home_loan">Home Loan</string>
+    <string name="aadhar_loan">Aadhar Loan</string>
+    <string name="student_loan">Student Loan</string>
+    <string name="enter_interest_rate">Enter Interest rate</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="enter_age">Enter Age</string>
+    <string name="enter_requirement">Enter Requirement</string>
+    <string name="enter_url">Enter Url</string>
+    <string name="show_loan_app_data">Show Loan App Data</string>
 
 </resources>
