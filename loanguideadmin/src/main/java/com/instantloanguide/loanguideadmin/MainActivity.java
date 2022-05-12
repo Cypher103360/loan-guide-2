@@ -34,6 +34,8 @@ import com.instantloanguide.loanguideadmin.models.AdsModelList;
 import com.instantloanguide.loanguideadmin.models.BannerModel;
 import com.instantloanguide.loanguideadmin.models.BannerModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
+import com.instantloanguide.loanguideadmin.models.UrlModel;
+import com.instantloanguide.loanguideadmin.models.UrlModelList;
 import com.instantloanguide.loanguideadmin.services.ApiInterface;
 import com.instantloanguide.loanguideadmin.services.ApiWebServices;
 import com.instantloanguide.loanguideadmin.utils.CommonMethods;
@@ -53,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String key, adIdTitle;
-    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog, bannerDialog;
+    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog, bannerDialog, urlsDialog;
     String titleTXt, englishTxt, hindiTxt;
-    String encodedImage, banTitle, banImg;
+    String encodedImage, banTitle, banImg, mUrls, mUrlTitle;
     Bitmap bitmap;
     Button uploadBannerBtn;
     ActivityResultLauncher<String> launcher;
@@ -144,6 +146,101 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, UploadLoanAppActivity.class);
             intent.putExtra("key", "show");
             startActivity(intent);
+        });
+        binding.urlBtn.setOnClickListener(v -> {
+            String[] items = new String[]{"Financial Tips", "EMI Calculator"};
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+            builder.setTitle("Update Urls").setItems(items, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        loadingDialog.show();
+                        map.put("title", "finance_tips");
+                        updateUrlsDialog(map, "Financial Tips");
+                        break;
+                    case 1:
+                        loadingDialog.show();
+                        map.put("title", "emi_cal");
+                        updateUrlsDialog(map, "EMI Calculator");
+                        break;
+                    default:
+                }
+            }).show();
+        });
+    }
+
+    private void updateUrlsDialog(Map<String, String> map, String title) {
+        urlsDialog = new Dialog(MainActivity.this);
+        urlsDialog.setContentView(R.layout.url_layout);
+        urlsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        urlsDialog.setCancelable(false);
+        urlsDialog.show();
+
+        TextView dialogTitle = urlsDialog.findViewById(R.id.dialog_title);
+        dialogTitle.setText(title);
+        EditText urlEd = urlsDialog.findViewById(R.id.ur_edit);
+        Button cancelBtn, uploadUrlsBtn;
+        cancelBtn = urlsDialog.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(v -> {
+            urlsDialog.dismiss();
+        });
+        uploadUrlsBtn = urlsDialog.findViewById(R.id.upload_urls);
+
+        Call<UrlModelList> call = apiInterface.fetchUrls(map);
+        call.enqueue(new Callback<UrlModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<UrlModelList> call, @NonNull Response<UrlModelList> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getData() != null) {
+                        loadingDialog.dismiss();
+                        for (UrlModel urlModel : response.body().getData()) {
+                            urlEd.setText(urlModel.getUrl());
+                            mUrlTitle = urlModel.getTitle();
+                            loadingDialog.dismiss();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UrlModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+
+        uploadUrlsBtn.setOnClickListener(v -> {
+            loadingDialog.show();
+            String url = urlEd.getText().toString().trim();
+            if (TextUtils.isEmpty(url)){
+                urlEd.setError("Url Required");
+                urlEd.requestFocus();
+            }else {
+                map.put("title",mUrlTitle);
+                map.put("url",url);
+                updateUrls(map);
+            }
+        });
+
+    }
+
+    private void updateUrls(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateUrls(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()){
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
+                    urlsDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+
+            }
         });
     }
 

@@ -7,14 +7,14 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.instantloanguide.allloantips.databinding.ActivityAppDetailsBinding;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class AppDetailsActivity extends AppCompatActivity {
     ActivityAppDetailsBinding binding;
-    String name, interest, amount, age, requirement, url;
-    int image;
+    String name, interest, amount, age, requirement, url,image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +23,13 @@ public class AppDetailsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.backBtn.setOnClickListener(view -> {
-            onBackPressed();
+
         });
 
         ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
-        image = getIntent().getIntExtra("img", 0);
+        image = getIntent().getStringExtra("img");
         name = getIntent().getStringExtra("name");
         interest = getIntent().getStringExtra("interest");
         amount = getIntent().getStringExtra("amount");
@@ -39,15 +39,13 @@ public class AppDetailsActivity extends AppCompatActivity {
 
         binding.actTitle.setText(name);
 
-        binding.appImage.setImageResource(image);
+        Glide.with(AppDetailsActivity.this).load(
+                "https://gedgetsworld.in/Loan_App/loan_app_images/"+image).into(binding.appImage);
         binding.appName.setText(name);
         binding.appInterest.setText(interest);
         binding.appAmount.setText(amount);
         binding.appAge.setText(age);
         binding.appRequirement.setText(requirement);
-        binding.downloadBtn.setOnClickListener(view -> {
-            openWebPage(url);
-        });
         binding.applyNowBtn.setOnClickListener(view -> {
             openWebPage(url);
         });

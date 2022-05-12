@@ -1,32 +1,35 @@
 package com.instantloanguide.allloantips.models;
 
 public class LoanAppModel {
-    String id;
-    int appImage;
-    String appName;
-    String interest,amount,age,requirement,appUrl;
 
-    public LoanAppModel(String id, int appImage, String appName, String interest, String amount, String age, String requirement, String appUrl) {
+    String id, loanId, img, title, interest, amount, age, requirement, url;
+
+    public LoanAppModel(String id, String loanId, String img, String title, String interest, String amount, String age, String requirement, String url) {
         this.id = id;
-        this.appImage = appImage;
-        this.appName = appName;
+        this.loanId = loanId;
+        this.img = img;
+        this.title = title;
         this.interest = interest;
         this.amount = amount;
         this.age = age;
         this.requirement = requirement;
-        this.appUrl = appUrl;
+        this.url = url;
     }
 
     public String getId() {
         return id;
     }
 
-    public int getAppImage() {
-        return appImage;
+    public String getLoanId() {
+        return loanId;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getImg() {
+        return img;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getInterest() {
@@ -45,7 +48,7 @@ public class LoanAppModel {
         return requirement;
     }
 
-    public String getAppUrl() {
-        return appUrl;
+    public String getUrl() {
+        return url;
     }
 }

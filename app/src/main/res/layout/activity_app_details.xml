@@ -246,18 +246,11 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/download_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:text="Download"
-            android:textColor="@color/black" />
-
-        <Button
             android:id="@+id/apply_now_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="Apply Now"

@@ -53,12 +53,22 @@ import com.instantloanguide.allloantips.fragments.LoanTypeFragment;
 import com.instantloanguide.allloantips.fragments.NewsFragment;
 import com.instantloanguide.allloantips.fragments.StatusFragment;
 import com.instantloanguide.allloantips.fragments.TipsFragment;
+import com.instantloanguide.allloantips.models.ApiInterface;
+import com.instantloanguide.allloantips.models.ApiWebServices;
+import com.instantloanguide.allloantips.models.UrlModel;
+import com.instantloanguide.allloantips.models.UrlModelList;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.MyReceiver;
 import com.instantloanguide.allloantips.utils.ShowAds;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
@@ -73,6 +83,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     String[] cameraPermission;
     String[] storagePermission;
     int count = 1;
+    String tipsUrl;
+    ApiInterface apiInterface;
+    Map<String,String> map = new HashMap<>();
     public static Uri uri;
     ImageView navMenu, headerImage;
     DrawerLayout drawerLayout;
@@ -104,6 +117,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
         enableNavItems();
+        map.put("title","finance_tips");
+        fetchTipsUrl(map);
         if (count == 2) {
             ViewPager viewPager = binding.viewPager;
             viewPager.setAdapter(sectionsPagerAdapter);
@@ -111,6 +126,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             tabs.setupWithViewPager(viewPager);
             navigationDrawer();
         }
+    }
+
+    private void fetchTipsUrl(Map<String, String> map) {
+        Call<UrlModelList> call = apiInterface.fetchUrls(map);
+        call.enqueue(new Callback<UrlModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<UrlModelList> call, @NonNull Response<UrlModelList> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getData() != null) {
+                        for (UrlModel urlModel : response.body().getData()) {
+                            tipsUrl = urlModel.getUrl();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UrlModelList> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 
     private void Set_Visibility_OFF() {
@@ -132,6 +169,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         loading = CommonMethods.getDialog(HomeActivity.this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         navigationView = binding.navigation;
+        apiInterface = ApiWebServices.getApiInterface();
         navMenu = binding.navMenu;
         bundle = new Bundle();
         drawerLayout = binding.drawerLayout;
@@ -227,6 +265,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
+
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -237,6 +277,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
             case R.id.nav_finance_tips:
+                openWebPage(tipsUrl);
                 break;
             case R.id.nav_contact:
                 try {
@@ -414,26 +455,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle(R.string.app_name)
-                .setIcon(R.mipmap.ic_launcher)
-                .setMessage("Do You Really Want To Exit?\nAlso Rate Us 5 Star.")
-                .setNeutralButton("CANCEL", (dialog, which) -> {
-                });
-
-
-        builder.setNegativeButton("RATE APP", (dialog, which) -> CommonMethods.rateApp(getApplicationContext()))
-                .setPositiveButton("OK!!", (dialog, which) -> {
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
-                    moveTaskToBack(true);
-                    System.exit(0);
-
-                });
-        builder.show();
+    @SuppressLint("QueryPermissionsNeeded")
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

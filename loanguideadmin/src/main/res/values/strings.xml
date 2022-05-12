@@ -28,6 +28,7 @@
     <string name="bank_loan">Bank Loan</string>
     <string name="business_loan">Business Loan</string>
     <string name="home_loan">Home Loan</string>
+    <string name="update_urls">Update Urls</string>
     <string name="aadhar_loan">Aadhar Loan</string>
     <string name="student_loan">Student Loan</string>
     <string name="enter_interest_rate">Enter Interest rate</string>

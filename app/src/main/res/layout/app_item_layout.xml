@@ -45,8 +45,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/black"
-                android:text="Apply Now" />
+                android:text="Get Details" />
 
 
         </LinearLayout>

@@ -22,6 +22,8 @@ import com.instantloanguide.allloantips.models.ApiInterface;
 import com.instantloanguide.allloantips.models.ApiWebServices;
 import com.instantloanguide.allloantips.models.BannerModel;
 import com.instantloanguide.allloantips.models.BannerModelList;
+import com.instantloanguide.allloantips.models.UrlModel;
+import com.instantloanguide.allloantips.models.UrlModelList;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.ShowAds;
@@ -42,7 +44,7 @@ public class LoanTypeFragment extends Fragment {
     ShowAds showAds;
     ApiInterface apiInterface;
     Dialog loading;
-    String banUrl;
+    String banUrl,emiCalUrl;
     Map<String,String> map = new HashMap<>();
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -52,8 +54,8 @@ public class LoanTypeFragment extends Fragment {
         loading = CommonMethods.getDialog(requireContext());
         loading.show();
         apiInterface = ApiWebServices.getApiInterface();
-        map.put("title", "loan_types");
         fetchBannerImages();
+        fetchTipsUrl();
 
          showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
@@ -78,32 +80,57 @@ public class LoanTypeFragment extends Fragment {
             }
         });
         binding.emiCalculator.setOnClickListener(view -> {
-            ArrayList<HashMap<String, Object>> items = new ArrayList<>();
-
-            final PackageManager pm = requireActivity().getPackageManager();
-            List<PackageInfo> packs = pm.getInstalledPackages(0);
-            for (PackageInfo pi : packs) {
-                if (pi.packageName.toLowerCase().contains("calcul")) {
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("appName", pi.applicationInfo.loadLabel(pm));
-                    map.put("packageName", pi.packageName);
-                    items.add(map);
-                }
-            }
-            if (items.size() >= 1) {
-                String packageName = (String) items.get(0).get("packageName");
-                Intent i = pm.getLaunchIntentForPackage(packageName);
-                if (i != null)
-                    startActivity(i);
-            } else {
-                // Application not found
-            }
+            openWebPage(emiCalUrl);
+//            ArrayList<HashMap<String, Object>> items = new ArrayList<>();
+//
+//            final PackageManager pm = requireActivity().getPackageManager();
+//            List<PackageInfo> packs = pm.getInstalledPackages(0);
+//            for (PackageInfo pi : packs) {
+//                if (pi.packageName.toLowerCase().contains("calcul")) {
+//                    HashMap<String, Object> map = new HashMap<>();
+//                    map.put("appName", pi.applicationInfo.loadLabel(pm));
+//                    map.put("packageName", pi.packageName);
+//                    items.add(map);
+//                }
+//            }
+//            if (items.size() >= 1) {
+//                String packageName = (String) items.get(0).get("packageName");
+//                Intent i = pm.getLaunchIntentForPackage(packageName);
+//                if (i != null)
+//                    startActivity(i);
+//            } else {
+//                // Application not found
+//            }
         });
 
         return binding.getRoot();
     }
 
+    private void fetchTipsUrl() {
+        map.put("title", "emi_cal");
+        Call<UrlModelList> call = apiInterface.fetchUrls(map);
+        call.enqueue(new Callback<UrlModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<UrlModelList> call, @NonNull Response<UrlModelList> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getData() != null) {
+                        for (UrlModel urlModel : response.body().getData()) {
+                            emiCalUrl = urlModel.getUrl();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UrlModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
     public void fetchBannerImages(){
+        map.put("title", "loan_types");
         Call<BannerModelList> call = apiInterface.fetchBanner(map);
         call.enqueue(new Callback<BannerModelList>() {
             @Override

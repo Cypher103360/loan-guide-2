@@ -43,5 +43,13 @@ public interface ApiInterface {
 
     @GET("fetch_loan_data.php")
     Call<LoanModelList> getLoanData();
+
+    @FormUrlEncoded
+    @POST("fetch_urls.php")
+    Call<UrlModelList> fetchUrls(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_loan_app_details.php")
+    Call<LoanAppModelList> fetchLoanAppDetails(@Field("loanId") String id);
 }
 

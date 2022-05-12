@@ -2,9 +2,7 @@ package com.instantloanguide.allloantips.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +22,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
-import com.google.android.material.card.MaterialCardView;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.activities.AppDetailsActivity;
 import com.instantloanguide.allloantips.databinding.AdLayoutBinding;
@@ -35,7 +31,6 @@ import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,15 +39,15 @@ import io.paperdb.Paper;
 
 public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<LoanAppModel> loanAppModelList = new ArrayList<>();
-    Activity context;
-    LoanAppInterface loanAppInterface;
-
     private static final int ITEM_VIEW = 0;
     private static final int AD_VIEW = 1;
     private static final int ITEM_FEED_COUNT = 3;
+    List<LoanAppModel> loanAppModelList = new ArrayList<>();
+    Activity context;
+    LoanAppInterface loanAppInterface;
     AdLoader adLoader;
     ShowAds showAds;
+
     public LoanAppsAdapter(Activity context, LoanAppInterface loanAppInterface) {
         this.context = context;
         this.loanAppInterface = loanAppInterface;
@@ -75,24 +70,15 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            showAds= new ShowAds();
+            showAds = new ShowAds();
 
             LoanAppModel loanAppModel = loanAppModelList.get(position);
-            ((ItemViewHolder) holder).appName.setText(loanAppModelList.get(position).getAppName());
-            ((ItemViewHolder) holder).appIcon.setImageResource(loanAppModelList.get(position).getAppImage());
-            ((ItemViewHolder) holder).applyBtn.setOnClickListener(view -> {
-                Intent intent = new Intent(context, AppDetailsActivity.class);
-                showAds.showInterstitialAds(context);
-                Ads.destroyBanner();
+            ((ItemViewHolder) holder).appName.setText(loanAppModel.getTitle());
+            Glide.with(context).load("https://gedgetsworld.in/Loan_App/loan_app_images/"
+                    + loanAppModel.getImg()).into(((ItemViewHolder) holder).appIcon);
 
-                intent.putExtra("img",loanAppModel.getAppImage());
-                intent.putExtra("name",loanAppModel.getAppName());
-                intent.putExtra("interest",loanAppModel.getInterest());
-                intent.putExtra("amount",loanAppModel.getAmount());
-                intent.putExtra("age",loanAppModel.getAge());
-                intent.putExtra("requirement",loanAppModel.getRequirement());
-                intent.putExtra("url",loanAppModel.getAppUrl());
-                context.startActivity(intent);
+            ((ItemViewHolder) holder).applyBtn.setOnClickListener(view -> {
+              loanAppInterface.onItemClicked(loanAppModelList.get(position),position);
             });
 
         } else if (holder.getItemViewType() == AD_VIEW) {
@@ -145,7 +131,7 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    public  class AdViewHolder extends RecyclerView.ViewHolder {
+    public class AdViewHolder extends RecyclerView.ViewHolder {
         AdLayoutBinding binding;
 
         public AdViewHolder(@NonNull View itemAdView2) {
@@ -164,11 +150,11 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         populateNativeADView(nativeAd, nativeAdView);
                         binding.adLayout.removeAllViews();
                         binding.adLayout.setElevation(5);
-                        binding.adLayout.setPadding(5,5,5,5);
+                        binding.adLayout.setPadding(5, 5, 5, 5);
                         binding.adLayout.addView(nativeAdView);
                     });
 
-            adLoader= builder.withAdListener(new AdListener() {
+            adLoader = builder.withAdListener(new AdListener() {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     super.onAdFailedToLoad(loadAdError);

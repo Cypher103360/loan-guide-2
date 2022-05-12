@@ -22,6 +22,7 @@ import com.instantloanguide.allloantips.BuildConfig;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.models.LoanModel;
 import com.instantloanguide.allloantips.models.LoanModelList;
+import com.instantloanguide.allloantips.utils.CommonMethods;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,23 +88,7 @@ public class LoanDataAdapter extends RecyclerView.Adapter<LoanDataAdapter.ViewHo
             loanAmount = itemView.findViewById(R.id.loan_amount_tv);
             profileImg = itemView.findViewById(R.id.profileImg);
             shareBtn = itemView.findViewById(R.id.share_code_btn);
-            shareBtn.setOnClickListener(v -> shareApp());
-
-        }
-
-        private void shareApp() {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-                String shareMessage = "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                itemView.getContext().startActivity(Intent.createChooser(shareIntent, "choose one"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            shareBtn.setOnClickListener(v -> CommonMethods.shareApp(itemView.getContext()));
         }
 
         private void showFullProfileImage(String images) {

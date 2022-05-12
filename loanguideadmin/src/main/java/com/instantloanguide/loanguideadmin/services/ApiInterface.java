@@ -6,6 +6,7 @@ import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
+import com.instantloanguide.loanguideadmin.models.UrlModelList;
 
 import java.util.Map;
 
@@ -80,4 +81,12 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("delete_loan_app_details.php")
     Call<MessageModel> deleteLoanAppData(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_urls.php")
+    Call<UrlModelList> fetchUrls(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("update_urls.php")
+    Call<MessageModel> updateUrls(@FieldMap Map<String, String> map);
 }

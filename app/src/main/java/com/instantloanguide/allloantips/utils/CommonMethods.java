@@ -36,7 +36,11 @@ public class CommonMethods {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-            String shareMessage = "\nLet me recommend you this application\n\n";
+            String shareMessage = "Hey there," +
+                    "\n\nI got Genuine Advice Regards Loans while I was facing Financial issues that's Why\n" +
+                    "I am recommending you this Guide App\n" +
+                    "Install Now!"+
+                    "\n\n";
             shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
             shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
