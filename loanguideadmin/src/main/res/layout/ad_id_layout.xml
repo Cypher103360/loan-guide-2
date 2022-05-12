@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#00000000"
-    >
+    android:background="#00000000">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="10dp"
         android:backgroundTint="@color/white"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -141,12 +140,12 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
                         android:layout_marginBottom="10dp"
                         android:hint="@string/app_open_id"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout2">
@@ -158,6 +157,7 @@
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_textInputLayout4"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -166,12 +166,12 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
                         android:layout_marginBottom="10dp"
                         android:hint="@string/admob_banner_id"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout3">
@@ -183,6 +183,7 @@
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_textInputLayout5"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -191,12 +192,12 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
                         android:layout_marginBottom="10dp"
                         android:hint="@string/native_ads_id"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout4">
@@ -208,6 +209,7 @@
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_textInputLayout6"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -216,12 +218,12 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
                         android:layout_marginBottom="10dp"
                         android:hint="@string/banner"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout5">
@@ -233,6 +235,7 @@
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_textInputLayout7"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -241,12 +244,12 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
                         android:layout_marginBottom="10dp"
                         android:hint="@string/interstitial"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout6">
@@ -258,6 +261,7 @@
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_textInputLayout8"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -266,24 +270,25 @@
                         android:layout_margin="8dp"
                         android:layout_marginStart="13dp"
                         android:layout_marginEnd="13dp"
-                        app:endIconMode="clear_text"
-                        android:layout_marginBottom="10dp"
                         android:hint="@string/network_name"
                         android:textColorHint="@color/black"
                         android:visibility="visible"
                         app:boxStrokeColor="@color/black"
+                        app:endIconMode="dropdown_menu"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_textInputLayout7">
 
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/networkName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:padding="15dp"
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
 
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

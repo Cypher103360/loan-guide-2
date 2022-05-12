@@ -20,8 +20,10 @@
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_tips_detail.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/activity_welcome.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/ad_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/ad_unified.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/app_item_layout.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/disclaimer_layout.xml" value="0.2" />
+        <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fb_ad_unified.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_home.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_loan_type.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Loan-Guide/app/src/main/res/layout/fragment_news.xml" value="0.305111821086262" />
@@ -72,7 +74,6 @@
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_home.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_loan_type.xml" value="0.25" />
         <entry key="..\:/New Android Applications/LoanGuide/app/src/main/res/layout/fragment_loan_types.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/LoanGuide/loanguideadmin/src/main/res/layout/activity_main.xml" value="0.22" />
       </map>
     </option>
   </component>

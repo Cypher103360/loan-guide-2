@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -67,11 +69,14 @@ public class MainActivity extends AppCompatActivity {
     UploadImageDialogBinding imageDialogBinding;
     ApiInterface apiInterface;
     Call<MessageModel> call;
-    EditText admobKey, applovinAppKey, appOpenKey, admobBannerKey, nativeKey, banner, interstitial, networkName;
+    EditText admobKey, applovinAppKey, appOpenKey, admobBannerKey, nativeKey, banner, interstitial;
     ImageView okBtn, cancelBtn, bannerImageView;
     AdsModel adsModel;
     TextView title;
     Intent intent;
+    AutoCompleteTextView networkName;
+    String[] adsNetworks = {"AdmobWithMeta ", "IronSourceWithMeta", "AppLovinWithMeta", "Meta"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,12 +217,12 @@ public class MainActivity extends AppCompatActivity {
         uploadUrlsBtn.setOnClickListener(v -> {
             loadingDialog.show();
             String url = urlEd.getText().toString().trim();
-            if (TextUtils.isEmpty(url)){
+            if (TextUtils.isEmpty(url)) {
                 urlEd.setError("Url Required");
                 urlEd.requestFocus();
-            }else {
-                map.put("title",mUrlTitle);
-                map.put("url",url);
+            } else {
+                map.put("title", mUrlTitle);
+                map.put("url", url);
                 updateUrls(map);
             }
         });
@@ -229,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     assert response.body() != null;
                     Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     loadingDialog.dismiss();
@@ -484,6 +489,10 @@ public class MainActivity extends AppCompatActivity {
             adsUpdateDialog.dismiss();
         });
 
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, adsNetworks);
+        networkName.setAdapter(adapter);
+        networkName.setThreshold(1);
         apiInterface = ApiWebServices.getApiInterface();
         Call<AdsModelList> call = apiInterface.fetchAds(key);
         call.enqueue(new Callback<AdsModelList>() {

@@ -6,13 +6,20 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleObserver;
 
 import com.applovin.mediation.MaxAd;
@@ -20,18 +27,31 @@ import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdListener;
+import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
+import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.applovin.sdk.AppLovinSdk;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
+import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.AudienceNetworkAds;
 import com.facebook.ads.InterstitialAdListener;
+import com.facebook.ads.MediaView;
+import com.facebook.ads.NativeAdLayout;
+import com.facebook.ads.NativeAdListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.instantloanguide.allloantips.R;
 import com.ironsource.mediationsdk.ISBannerSize;
 import com.ironsource.mediationsdk.IronSource;
@@ -40,6 +60,8 @@ import com.ironsource.mediationsdk.logger.IronSourceError;
 import com.ironsource.mediationsdk.sdk.BannerListener;
 import com.ironsource.mediationsdk.sdk.InterstitialListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -51,9 +73,14 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
     public static IronSourceBannerLayout banner;
     public static InterstitialAd mInterstitialAd;
     static boolean checkAdLoad = false;
+    private static MaxAd nativeAd;
+    public NativeAd nativeAds;
     MaxAdView maxAdView;
     MaxInterstitialAd interstitialAd;
     private int retryAttempt;
+    private com.facebook.ads.NativeAd fbNativeAd;
+    private NativeAdLayout nativeAdLayout;
+    private LinearLayout adView;
 
 
     public static void destroyBanner() {
@@ -304,6 +331,273 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
                 interstitialAd.buildLoadAdConfig()
                         .withAdListener(interstitialAdListener)
                         .build());
+    }
+
+
+    public void loadadmobNativeAd(final Activity context, final FrameLayout frameLayout) {
+        refreshAd(context, frameLayout);
+    }
+
+    public void refreshAd(final Activity context, final FrameLayout frameLayout) {
+
+        AdLoader.Builder builder = new AdLoader.Builder(context, Objects.requireNonNull(Paper.book().read(Prevalent.nativeAds)));
+
+        builder.forNativeAd(nativeAd -> {
+
+
+            if (nativeAds != null) {
+                nativeAds.destroy();
+            }
+            nativeAds = nativeAd;
+            NativeAdView adView = (NativeAdView) context.getLayoutInflater()
+                    .inflate(R.layout.ad_unified, null);
+            populateUnifiedNativeAdView(nativeAd, adView);
+            frameLayout.removeAllViews();
+            frameLayout.addView(adView);
+        });
+
+        VideoOptions videoOptions = new VideoOptions.Builder()
+                .setStartMuted(false)
+                .build();
+
+        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                .setVideoOptions(videoOptions)
+                .build();
+
+        builder.withNativeAdOptions(adOptions);
+
+//        AdLoader adLoader = builder.withAdListener(new AdListener() {
+//            @Override
+//            /**      * @deprecated (when, why, refactoring advice...)      */
+//            @Deprecated
+//            public void onAdFailedToLoad(int errorCode) {
+//                Toast.makeText(context, errorCode+"", Toast.LENGTH_SHORT).show();
+//            }
+//        }).build();
+        AdLoader adLoader = builder.withAdListener(new AdListener() {
+
+            @Override
+            @Deprecated
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+//                Toast.makeText(context, loadAdError.getMessage()+"", Toast.LENGTH_SHORT).show();
+            }
+        }).build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+
+        adLoader.loadAd(adRequest);
+
+    }
+
+    private void populateUnifiedNativeAdView(com.google.android.gms.ads.nativead.NativeAd nativeAd, NativeAdView adView) {
+
+
+        com.google.android.gms.ads.nativead.MediaView mediaView = adView.findViewById(R.id.ad_media);
+        adView.setMediaView(mediaView);
+
+
+        adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
+        adView.setBodyView(adView.findViewById(R.id.ad_body));
+        adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
+        adView.setIconView(adView.findViewById(R.id.ad_app_icon));
+        adView.setPriceView(adView.findViewById(R.id.ad_price));
+        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
+        adView.setStoreView(adView.findViewById(R.id.ad_store));
+        adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
+
+
+        ((TextView) Objects.requireNonNull(adView.getHeadlineView())).setText(nativeAd.getHeadline());
+
+
+        if (nativeAd.getBody() == null) {
+            Objects.requireNonNull(adView.getBodyView()).setVisibility(View.INVISIBLE);
+        } else {
+            Objects.requireNonNull(adView.getBodyView()).setVisibility(View.VISIBLE);
+            ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
+        }
+
+        if (nativeAd.getCallToAction() == null) {
+            Objects.requireNonNull(adView.getCallToActionView()).setVisibility(View.INVISIBLE);
+        } else {
+            Objects.requireNonNull(adView.getCallToActionView()).setVisibility(View.VISIBLE);
+            ((Button) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+        }
+
+        if (nativeAd.getIcon() == null) {
+            Objects.requireNonNull(adView.getIconView()).setVisibility(View.GONE);
+        } else {
+            ((ImageView) Objects.requireNonNull(adView.getIconView())).setImageDrawable(
+                    nativeAd.getIcon().getDrawable());
+            adView.getIconView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getPrice() == null) {
+            Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
+        } else {
+            Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
+            ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+        }
+
+        if (nativeAd.getStore() == null) {
+            Objects.requireNonNull(adView.getStoreView()).setVisibility(View.INVISIBLE);
+        } else {
+            Objects.requireNonNull(adView.getStoreView()).setVisibility(View.VISIBLE);
+            ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+        }
+
+        if (nativeAd.getStarRating() == null) {
+            Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
+        } else {
+            ((RatingBar) Objects.requireNonNull(adView.getStarRatingView()))
+                    .setRating(nativeAd.getStarRating().floatValue());
+            adView.getStarRatingView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getAdvertiser() == null) {
+            Objects.requireNonNull(adView.getAdvertiserView()).setVisibility(View.INVISIBLE);
+        } else {
+            ((TextView) Objects.requireNonNull(adView.getAdvertiserView())).setText(nativeAd.getAdvertiser());
+            adView.getAdvertiserView().setVisibility(View.VISIBLE);
+        }
+
+        adView.setNativeAd(nativeAd);
+
+    }
+
+
+    public void appLovinNative(Activity context, FrameLayout frameLayout) {
+        MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(Objects.requireNonNull(Paper.book().read(Prevalent.nativeAds)), context);
+        nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
+            @Override
+            public void onNativeAdLoaded(@Nullable MaxNativeAdView maxNativeAdView, MaxAd maxAd) {
+                // Cleanup any pre-existing native ad to prevent memory leaks.
+                if (nativeAd != null) {
+                    nativeAdLoader.destroy(nativeAd);
+                }
+
+                // Save ad for cleanup.
+                nativeAd = maxAd;
+
+                // Add ad view to view.
+                frameLayout.removeAllViews();
+                frameLayout.addView(maxNativeAdView);
+                super.onNativeAdLoaded(maxNativeAdView, maxAd);
+
+            }
+
+            @Override
+            public void onNativeAdLoadFailed(String s, MaxError maxError) {
+                super.onNativeAdLoadFailed(s, maxError);
+                frameLayout.setVisibility(View.GONE);
+                Log.e("aaaaaaaerror", maxError.getMessage());
+
+            }
+
+            @Override
+            public void onNativeAdClicked(MaxAd maxAd) {
+                super.onNativeAdClicked(maxAd);
+            }
+        });
+
+
+        nativeAdLoader.loadAd();
+
+
+    }
+
+    public void metaNativeAds(Activity context, FrameLayout container) {
+        AudienceNetworkAds.initialize(context);
+        String id = Objects.requireNonNull(Paper.book().read(Prevalent.nativeAds));
+        fbNativeAd = new com.facebook.ads.NativeAd(context, id);
+
+        NativeAdListener nativeAdListener = new NativeAdListener() {
+            @Override
+            public void onMediaDownloaded(Ad ad) {
+                // Native ad finished downloading all assets
+                Log.e(TAG, "Native ad finished downloading all assets.");
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                // Native ad failed to load
+                Log.e(TAG, "Native ad failed to load: " + adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                if (fbNativeAd == null || fbNativeAd != ad) {
+                    return;
+                }
+                // Inflate Native Ad into Container
+                inflateAd(fbNativeAd, container);
+                // Native ad is loaded and ready to be displayed
+                Log.d(TAG, "Native ad is loaded and ready to be displayed!");
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Native ad clicked
+                Log.d(TAG, "Native ad clicked!");
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Native ad impression
+                Log.d(TAG, "Native ad impression logged!");
+            }
+        };
+
+        // Request an ad
+        fbNativeAd.loadAd(
+                fbNativeAd.buildLoadAdConfig()
+                        .withAdListener(nativeAdListener)
+                        .build());
+    }
+
+    private void inflateAd(com.facebook.ads.NativeAd nativeAd, FrameLayout container) {
+
+        nativeAd.unregisterView();
+
+        // Add the Ad view into the ad container.
+        nativeAdLayout = new NativeAdLayout(container.getContext());
+        container.addView(nativeAdLayout);
+        LayoutInflater inflater = LayoutInflater.from(container.getContext());
+        // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
+        adView = (LinearLayout) inflater.inflate(R.layout.fb_ad_unified, nativeAdLayout, false);
+        nativeAdLayout.addView(adView);
+
+        // Add the AdOptionsView
+        LinearLayout adChoicesContainer = adView.findViewById(R.id.ad_choices_container);
+        AdOptionsView adOptionsView = new AdOptionsView(container.getContext(), nativeAd, nativeAdLayout);
+        adChoicesContainer.removeAllViews();
+        adChoicesContainer.addView(adOptionsView, 0);
+
+        // Create native UI using the ad metadata.
+        MediaView nativeAdIcon = adView.findViewById(R.id.native_ad_icon);
+        TextView nativeAdTitle = adView.findViewById(R.id.native_ad_title);
+//        MediaView nativeAdMedia = adView.findViewById(R.id.native_ad_media);
+        TextView nativeAdSocialContext = adView.findViewById(R.id.native_ad_social_context);
+        TextView nativeAdBody = adView.findViewById(R.id.native_ad_body);
+        TextView sponsoredLabel = adView.findViewById(R.id.native_ad_sponsored_label);
+        Button nativeAdCallToAction = adView.findViewById(R.id.native_ad_call_to_action);
+
+        // Set the Text.
+        nativeAdTitle.setText(nativeAd.getAdvertiserName());
+        nativeAdBody.setText(nativeAd.getAdBodyText());
+        nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
+        nativeAdCallToAction.setVisibility(nativeAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
+        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
+        sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
+
+        // Create a list of clickable views
+        List<View> clickableViews = new ArrayList<>();
+        clickableViews.add(nativeAdTitle);
+        clickableViews.add(nativeAdCallToAction);
+
+        // Register the Title and CTA button to listen for clicks.
+        nativeAd.registerViewForInteraction(
+                adView, nativeAdIcon, clickableViews);
     }
 
 
