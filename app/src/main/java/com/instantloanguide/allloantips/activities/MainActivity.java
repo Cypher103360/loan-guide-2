@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 if (account != null) {
                     startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
                 } else {
-                    startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
                 }
                 finish();
             }, 100);

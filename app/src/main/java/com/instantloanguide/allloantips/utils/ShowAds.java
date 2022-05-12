@@ -5,6 +5,8 @@ import static android.content.ContentValues.TAG;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.lifecycle.Lifecycle;
@@ -94,6 +96,22 @@ public class ShowAds implements LifecycleObserver {
             }
         }
 
+    }
+
+    public void showNativeAds(Activity context, FrameLayout frameLayout) {
+        String nativeNetwork = Paper.book().read(Prevalent.networkName);
+        frameLayout.setVisibility(View.VISIBLE);
+        switch (Objects.requireNonNull(nativeNetwork)) {
+            case "AdmobWithMeta":
+                ads.loadadmobNativeAd(context, frameLayout);
+                break;
+            case "AppLovinWithMeta":
+                ads.appLovinNative(context, frameLayout);
+                break;
+            case "Meta":
+                ads.metaNativeAds(context, frameLayout);
+                break;
+        }
     }
 
 
