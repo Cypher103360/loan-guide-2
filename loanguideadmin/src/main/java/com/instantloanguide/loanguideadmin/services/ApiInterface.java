@@ -7,6 +7,7 @@ import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
 import com.instantloanguide.loanguideadmin.models.UrlModelList;
+import com.instantloanguide.loanguideadmin.models.UserData.UserDataModelList;
 
 import java.util.Map;
 
@@ -89,4 +90,7 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("update_urls.php")
     Call<MessageModel> updateUrls(@FieldMap Map<String, String> map);
+
+    @POST("fetch_user_data.php")
+    Call<UserDataModelList> getAllUserData();
 }

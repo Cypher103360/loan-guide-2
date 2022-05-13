@@ -51,5 +51,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("fetch_loan_app_details.php")
     Call<LoanAppModelList> fetchLoanAppDetails(@Field("loanId") String id);
+
+
+    @FormUrlEncoded
+    @POST("upload_user_data.php")
+    Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
 }
 

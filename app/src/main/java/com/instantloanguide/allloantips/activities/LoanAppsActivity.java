@@ -3,12 +3,12 @@ package com.instantloanguide.allloantips.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.instantloanguide.allloantips.adapter.LoanAppsAdapter;
 import com.instantloanguide.allloantips.databinding.ActivityLoanAppsBinding;
@@ -37,6 +37,7 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
     String key, title;
     Dialog loading;
     List<LoanAppModel> loanAppModels = new ArrayList<>();
+    ShowAds showAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,13 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
         loading = CommonMethods.getDialog(LoanAppsActivity.this);
         loading.show();
         fetchData(key);
+        binding.refreshLayout.setOnRefreshListener(() -> {
+            loading.show();
+            fetchData(key);
+            binding.refreshLayout.setRefreshing(false);
+        });
 
-        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         binding.backBtn.setOnClickListener(view -> {
@@ -99,14 +105,16 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
 
     @Override
     public void onItemClicked(LoanAppModel loanAppModel, int position) {
-        Intent intent = new Intent(LoanAppsActivity.this,AppDetailsActivity.class);
-        intent.putExtra("img",loanAppModel.getImg());
-        intent.putExtra("name",loanAppModel.getTitle());
-        intent.putExtra("interest",loanAppModel.getInterest());
-        intent.putExtra("amount",loanAppModel.getAmount());
-        intent.putExtra("age",loanAppModel.getAge());
-        intent.putExtra("requirement",loanAppModel.getRequirement());
-        intent.putExtra("url",loanAppModel.getUrl());
+        showAds.showInterstitialAds(this);
+        Ads.destroyBanner();
+        Intent intent = new Intent(LoanAppsActivity.this, AppDetailsActivity.class);
+        intent.putExtra("img", loanAppModel.getImg());
+        intent.putExtra("name", loanAppModel.getTitle());
+        intent.putExtra("interest", loanAppModel.getInterest());
+        intent.putExtra("amount", loanAppModel.getAmount());
+        intent.putExtra("age", loanAppModel.getAge());
+        intent.putExtra("requirement", loanAppModel.getRequirement());
+        intent.putExtra("url", loanAppModel.getUrl());
         startActivity(intent);
     }
 }

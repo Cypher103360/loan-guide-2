@@ -35,6 +35,7 @@ import com.instantloanguide.allloantips.models.NewsModelList;
 import com.instantloanguide.allloantips.models.NewsViewModel;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,9 +75,14 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setNewsData(requireActivity());
-         showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
-        getLifecycle().addObserver(showAds);
 
+        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+        } else {
+            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
+            getLifecycle().addObserver(showAds);
+
+        }
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

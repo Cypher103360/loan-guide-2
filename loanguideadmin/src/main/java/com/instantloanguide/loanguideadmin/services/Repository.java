@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
+import com.instantloanguide.loanguideadmin.models.UserData.UserDataModelList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +21,7 @@ public class Repository {
     MutableLiveData<NewsModelList> newsModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<TipsModelList> tipsModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<LoanAppModelList> loanAppModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<UserDataModelList> userDataModelListMutableLiveData = new MutableLiveData<>();
 
 
     public Repository() {
@@ -92,5 +94,22 @@ public class Repository {
         return loanAppModelListMutableLiveData;
     }
 
+    public MutableLiveData<UserDataModelList> getUserDataModelListMutableLiveData(){
+        Call<UserDataModelList> call = apiInterface.getAllUserData();
+        call.enqueue(new Callback<UserDataModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<UserDataModelList> call, @NonNull Response<UserDataModelList> response) {
+                if (response.isSuccessful()){
+                    userDataModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserDataModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return userDataModelListMutableLiveData;
+    }
 
 }

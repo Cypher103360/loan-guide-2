@@ -23,6 +23,7 @@ import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.models.LoanModel;
 import com.instantloanguide.allloantips.models.LoanModelList;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ public class LoanDataAdapter extends RecyclerView.Adapter<LoanDataAdapter.ViewHo
     List<LoanModel> loanModelList = new ArrayList<>();
     Activity context;
 
+    ShowAds showAds = new ShowAds();
     public LoanDataAdapter(Activity context) {
         this.context = context;
     }
@@ -57,7 +59,7 @@ public class LoanDataAdapter extends RecyclerView.Adapter<LoanDataAdapter.ViewHo
         holder.showFullProfileImage(loanModelList.get(position).getImages());
 
         holder.profileImg.setOnClickListener(v -> {
-          //  CommonMethod.interstitialAds(context);
+            showAds.showInterstitialAds(context);
             holder.dialog.show();
         });
     }

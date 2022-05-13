@@ -25,6 +25,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     Button hindiPreview,englishPreview;
     TextView newsTitleTv,newsDescTv;
     ImageView newsImageView;
+    ShowAds showAds;
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         newsDescTv = binding.newsDesc;
         newsImageView = binding.newsImg;
 
-        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         id = getIntent().getStringExtra("id");
@@ -70,7 +71,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
                         binding.englishPreview.setTextColor(Color.parseColor("#FF2B2B2B"));
                         binding.hindiPreview.setBackgroundColor(ContextCompat.getColor(this,R.color.purple_700));
                         binding.hindiPreview.setTextColor(Color.BLACK);
-
+                         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+                        getLifecycle().addObserver(showAds);
                         binding.newsDesc.setText(hinDesc);
                         break;
                     case R.id.englishPreview:
@@ -78,6 +80,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
                         binding.englishPreview.setTextColor(Color.BLACK);
                         binding.hindiPreview.setBackgroundColor(0);
                         binding.hindiPreview.setTextColor(Color.parseColor("#FF2B2B2B"));
+                         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+                        getLifecycle().addObserver(showAds);
 
                         binding.newsDesc.setText(engDesc);
                         break;

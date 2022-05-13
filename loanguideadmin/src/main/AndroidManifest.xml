@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoanGuide">
         <activity
+            android:name=".UserDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".UploadLoanAppActivity"
             android:exported="false" />
         <activity

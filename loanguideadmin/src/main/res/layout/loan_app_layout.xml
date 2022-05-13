@@ -147,7 +147,7 @@
                             android:cursorVisible="true"
                             android:focusable="true"
                             android:gravity="start"
-                            android:inputType="number"
+                            android:inputType="text"
                             android:importantForAutofill="no"
                             android:scrollbars="vertical"
                             android:textColor="@color/black"
@@ -177,7 +177,7 @@
                             android:clickable="true"
                             android:cursorVisible="true"
                             android:focusable="true"
-                            android:inputType="number"
+                            android:inputType="text"
                             android:gravity="start"
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
@@ -205,7 +205,7 @@
                             android:clickable="true"
                             android:cursorVisible="true"
                             android:focusable="true"
-                            android:inputType="number"
+                            android:inputType="text"
                             android:gravity="start"
                             android:textColor="@color/black"
                             tools:ignore="LabelFor,SpeakableTextPresentCheck" />

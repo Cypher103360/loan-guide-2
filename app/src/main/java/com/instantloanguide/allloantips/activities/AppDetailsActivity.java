@@ -23,7 +23,7 @@ public class AppDetailsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.backBtn.setOnClickListener(view -> {
-
+            onBackPressed();
         });
 
         ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
@@ -61,6 +61,7 @@ public class AppDetailsActivity extends AppCompatActivity {
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
         Uri webpage = Uri.parse(url);
+        Ads.destroyBanner();
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage
         );
         if (intent.resolveActivity(getPackageManager()) != null) {

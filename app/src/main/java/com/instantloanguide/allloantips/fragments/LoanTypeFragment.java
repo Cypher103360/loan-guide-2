@@ -3,11 +3,9 @@ package com.instantloanguide.allloantips.fragments;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,14 @@ import com.instantloanguide.allloantips.models.UrlModel;
 import com.instantloanguide.allloantips.models.UrlModelList;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +42,9 @@ public class LoanTypeFragment extends Fragment {
     ShowAds showAds;
     ApiInterface apiInterface;
     Dialog loading;
-    String banUrl,emiCalUrl;
-    Map<String,String> map = new HashMap<>();
+    String banUrl, emiCalUrl;
+    Map<String, String> map = new HashMap<>();
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,9 +56,13 @@ public class LoanTypeFragment extends Fragment {
         fetchBannerImages();
         fetchTipsUrl();
 
-         showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
-        getLifecycle().addObserver(showAds);
 
+        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+        } else {
+            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
+            getLifecycle().addObserver(showAds);
+        }
         binding.loanOrPersonal.setOnClickListener(view -> {
             showAds.showInterstitialAds(requireActivity());
             Ads.destroyBanner();
@@ -129,7 +132,7 @@ public class LoanTypeFragment extends Fragment {
         });
     }
 
-    public void fetchBannerImages(){
+    public void fetchBannerImages() {
         map.put("title", "loan_types");
         Call<BannerModelList> call = apiInterface.fetchBanner(map);
         call.enqueue(new Callback<BannerModelList>() {

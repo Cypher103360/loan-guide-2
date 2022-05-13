@@ -72,7 +72,7 @@ public class ShowAds implements LifecycleObserver {
 
     public void showBanner(Activity context, RelativeLayout topAdView, RelativeLayout bottomAdView) {
 
-        if (Objects.requireNonNull(Paper.book().read(Prevalent.networkName)).equals("IronSourceWithMeta") || Objects.requireNonNull(Paper.book().read(Prevalent.networkName)).equals("AppLovinWithMeta")) {
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.networkName)).equals("IronSourceWithMeta")) {
 
             if (topAdView != null && bottomAdView != null) {
                 ads.showBannerAd(context, topAdView, Objects.requireNonNull(Paper.book().read(Prevalent.networkName)), Paper.book().read(Prevalent.bannerAds));

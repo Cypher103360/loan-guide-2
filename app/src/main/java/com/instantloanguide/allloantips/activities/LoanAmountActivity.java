@@ -32,18 +32,15 @@ public class LoanAmountActivity extends AppCompatActivity {
          showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
-        binding.submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Ads.destroyBanner();
-                showAds.showInterstitialAds(LoanAmountActivity.this);
-                if (TextUtils.isEmpty(binding.amountEdt.getText().toString())) {
-                    Toast.makeText(LoanAmountActivity.this, "Please enter your amount", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(LoanAmountActivity.this, CheckDocumentActivity.class);
-                    intent.putExtra("id", id);
-                    startActivity(intent);
-                }
+        binding.submitBtn.setOnClickListener(view -> {
+            Ads.destroyBanner();
+            showAds.showInterstitialAds(LoanAmountActivity.this);
+            if (TextUtils.isEmpty(binding.amountEdt.getText().toString())) {
+                Toast.makeText(LoanAmountActivity.this, "Please enter your amount", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(LoanAmountActivity.this, CheckDocumentActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
             }
         });
     }

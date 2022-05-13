@@ -32,6 +32,8 @@ import com.instantloanguide.allloantips.models.LoanModel;
 import com.instantloanguide.allloantips.models.LoanModelView;
 import com.instantloanguide.allloantips.models.MessageModel;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.Prevalent;
+import com.instantloanguide.allloantips.utils.ShowAds;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,11 +64,12 @@ public class StatusFragment extends Fragment {
     ApiInterface apiInterface;
     List<LoanModel> loanModels = new ArrayList<>();
     Map<String, String> map = new HashMap<>();
+    ShowAds showAds;
 
 
     public static String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
@@ -100,6 +104,13 @@ public class StatusFragment extends Fragment {
         recyclerView.setAdapter(loanDataAdapter);
         loanModelView = new ViewModelProvider(requireActivity()).get(LoanModelView.class);
         showLoanData();
+        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+        } else {
+            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
+            getLifecycle().addObserver(showAds);
+
+        }
 
         addLoanBtn.setOnClickListener(v -> AddLoanDialog(requireContext()));
 

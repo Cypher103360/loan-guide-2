@@ -76,7 +76,7 @@
                 android:id="@+id/materialCardView2"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_marginTop="16sp"
+                android:layout_marginTop="8sp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -85,6 +85,7 @@
 
                 <ImageView
                     android:id="@+id/app_image"
+                    android:scaleType="centerCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:srcCompat="@tools:sample/avatars" />
@@ -117,7 +118,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardView2" />
+                app:layout_constraintTop_toTopOf="@+id/textView4" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -221,10 +222,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="TextView"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView11"

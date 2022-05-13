@@ -59,6 +59,7 @@ import com.instantloanguide.allloantips.models.UrlModel;
 import com.instantloanguide.allloantips.models.UrlModelList;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.MyReceiver;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -66,6 +67,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -173,8 +175,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navMenu = binding.navMenu;
         bundle = new Bundle();
         drawerLayout = binding.drawerLayout;
-        ShowAds showAds = new ShowAds(this, binding.topAdView, null);
-        getLifecycle().addObserver(showAds);
+        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")){
+            ShowAds showAds = new ShowAds(this, binding.topAdView, null);
+            getLifecycle().addObserver(showAds);
+        }else {
+            binding.topAdView.setVisibility(View.GONE);
+        }
+
+
         // allowing permissions of gallery and camera
         cameraPermission = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -293,7 +301,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mFirebaseAnalytics.logEvent("Selected_rate_menu_item", bundle);
                 break;
             case R.id.nav_privacy:
-                startActivity(new Intent(HomeActivity.this, PrivacyPolicyActivity.class));
+                Intent intent = new Intent(HomeActivity.this,PrivacyPolicyActivity.class);
+                intent.putExtra("key","policy");
+                startActivity(intent);
                 break;
             case R.id.nav_share:
                 CommonMethods.shareApp(this);

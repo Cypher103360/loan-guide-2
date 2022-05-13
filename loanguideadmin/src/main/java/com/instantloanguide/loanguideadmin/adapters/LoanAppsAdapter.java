@@ -52,7 +52,6 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-
         return loanAppModelList.size();
     }
 

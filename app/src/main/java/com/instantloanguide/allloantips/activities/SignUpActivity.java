@@ -10,6 +10,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Google SignIn
@@ -56,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
         // test link span
         TextView tv =  findViewById(R.id.terms_text);
         Spannable span = Spannable.Factory.getInstance().newSpannable(
-                "By continuing, you agree to Loan Guide's Terms of Service and acknowledge that you've read our Privacy Policy");
+                "By continuing, you agree to Loan Guide's\n Terms of Service and acknowledge that you've read our Privacy Policy");
         span.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View v) {
@@ -64,7 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
                 intent.putExtra("key","terms");
                 startActivity(intent);
             }
-        }, 47, 63, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, 42, 58, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // All the rest will have the same spannable.
         ClickableSpan cs = new ClickableSpan() {
@@ -77,7 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
         };
 
         // set the "test " spannable.
-        span.setSpan(cs, 101, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(cs, 96, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(span);
 

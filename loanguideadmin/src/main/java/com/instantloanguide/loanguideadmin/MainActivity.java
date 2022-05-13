@@ -171,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).show();
         });
+        binding.userDataBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this,UserDataActivity.class));
+        });
     }
 
     private void updateUrlsDialog(Map<String, String> map, String title) {
@@ -590,7 +593,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }

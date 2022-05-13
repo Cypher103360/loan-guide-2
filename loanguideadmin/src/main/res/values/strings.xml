@@ -37,5 +37,6 @@
     <string name="enter_requirement">Enter Requirement</string>
     <string name="enter_url">Enter Url</string>
     <string name="show_loan_app_data">Show Loan App Data</string>
+    <string name="show_user_data">Show User Data</string>
 
 </resources>

@@ -5,23 +5,19 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.activities.TipsDetailActivity;
 import com.instantloanguide.allloantips.adapter.TipsAdapter;
 import com.instantloanguide.allloantips.databinding.FragmentTipsBinding;
@@ -31,17 +27,19 @@ import com.instantloanguide.allloantips.models.BannerModel;
 import com.instantloanguide.allloantips.models.BannerModelList;
 import com.instantloanguide.allloantips.models.TipsClickInterface;
 import com.instantloanguide.allloantips.models.TipsModel;
-import com.instantloanguide.allloantips.models.TipsModelList;
 import com.instantloanguide.allloantips.models.TipsViewModel;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,9 +53,10 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
     FirebaseAnalytics firebaseAnalytics;
     ShowAds showAds;
     String banUrl;
-    Map<String,String> map = new HashMap<>();
+    Map<String, String> map = new HashMap<>();
     ApiInterface apiInterface;
     List<TipsModel> tipsModels;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTipsBinding.inflate(getLayoutInflater());
@@ -71,8 +70,13 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setTipsData(requireActivity());
-         showAds = new ShowAds(requireActivity(), null, binding.adViewBottom);
-        getLifecycle().addObserver(showAds);
+        if (Objects.equals(Paper.book().read(Prevalent.networkName), "IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+        } else {
+            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
+            getLifecycle().addObserver(showAds);
+
+        }
 
         binding.swipeRefresh.setOnRefreshListener(() -> {
             setTipsData(requireActivity());
@@ -84,10 +88,10 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
 
     private void setTipsData(FragmentActivity requireActivity) {
         tipsModels = new ArrayList<>();
-        tipsAdapter = new TipsAdapter(requireActivity,this);
+        tipsAdapter = new TipsAdapter(requireActivity, this);
         tipsRecyclerView.setAdapter(tipsAdapter);
         tipsViewModel.getAllTips().observe(requireActivity, tipsModelList -> {
-            if (!tipsModelList.getData().isEmpty()){
+            if (!tipsModelList.getData().isEmpty()) {
                 tipsModels.clear();
                 tipsModels.addAll(tipsModelList.getData());
                 tipsAdapter.updateList(tipsModels);
@@ -96,7 +100,7 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         });
     }
 
-    public void fetchBannerImages(){
+    public void fetchBannerImages() {
         Call<BannerModelList> call = apiInterface.fetchBanner(map);
         call.enqueue(new Callback<BannerModelList>() {
             @Override
@@ -134,16 +138,17 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
             startActivity(intent);
         }
     }
+
     @Override
     public void onClicked(TipsModel tipsModel) {
         Ads.destroyBanner();
         showAds.showInterstitialAds(requireActivity());
 
         Intent intent = new Intent(requireActivity(), TipsDetailActivity.class);
-        intent.putExtra("id",tipsModel.getId());
-        intent.putExtra("title",tipsModel.getTipsTitle());
-        intent.putExtra("engDesc",tipsModel.getTipsEngDesc());
-        intent.putExtra("hinDesc",tipsModel.getTipsHinDesc());
+        intent.putExtra("id", tipsModel.getId());
+        intent.putExtra("title", tipsModel.getTipsTitle());
+        intent.putExtra("engDesc", tipsModel.getTipsEngDesc());
+        intent.putExtra("hinDesc", tipsModel.getTipsHinDesc());
         startActivity(intent);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
