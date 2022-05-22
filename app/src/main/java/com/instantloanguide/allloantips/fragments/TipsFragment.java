@@ -51,7 +51,7 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
     Dialog loadingDialog;
     TipsViewModel tipsViewModel;
     FirebaseAnalytics firebaseAnalytics;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
     String banUrl;
     Map<String, String> map = new HashMap<>();
     ApiInterface apiInterface;

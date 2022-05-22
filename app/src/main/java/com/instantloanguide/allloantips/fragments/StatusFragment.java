@@ -1,10 +1,15 @@
 package com.instantloanguide.allloantips.fragments;
 
+import static android.content.ContentValues.TAG;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -18,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,7 +71,7 @@ public class StatusFragment extends Fragment {
     ApiInterface apiInterface;
     List<LoanModel> loanModels = new ArrayList<>();
     Map<String, String> map = new HashMap<>();
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
 
 
     public static String imageStore(Bitmap bitmap) {
@@ -137,7 +144,11 @@ public class StatusFragment extends Fragment {
 
         userImageView = addLoanDialog.findViewById(R.id.profileImg);
         storagePermission = new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        userImageView.setOnClickListener(v -> pickFromGallery());
+        userImageView.setOnClickListener(v -> {
+            if (isStoragePermissionGranted()) {
+                pickFromGallery();
+            }
+        });
         cancelBtn.setOnClickListener(v -> {
             addLoanDialog.dismiss();
         });
@@ -169,6 +180,24 @@ public class StatusFragment extends Fragment {
                 uploadLoanData(map);
             }
         });
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PermissionChecker.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            return true;
+        }
     }
 
     private void uploadLoanData(Map<String, String> map) {

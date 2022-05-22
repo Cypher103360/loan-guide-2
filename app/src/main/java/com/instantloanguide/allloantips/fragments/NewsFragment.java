@@ -59,7 +59,7 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     FirebaseAnalytics firebaseAnalytics;
     ApiInterface apiInterface;
 
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
     List<NewsModel> newsModels;
 
     @Override

@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.instantloanguide.loanguideadmin.adapters.UserDataAdapter;
 import com.instantloanguide.loanguideadmin.adapters.UserDataClickInterface;
@@ -75,6 +79,10 @@ public class UserDataActivity extends AppCompatActivity implements UserDataClick
 
     @Override
     public void onClicked(UserDataModel userDataModel) {
-
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Name & Email Copied to clipboard",
+                userDataModel.getName()+"\n"+userDataModel.getEmail());
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(this, clip.getDescription().getLabel(), Toast.LENGTH_SHORT).show();
     }
 }

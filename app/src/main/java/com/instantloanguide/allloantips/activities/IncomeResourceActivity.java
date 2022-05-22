@@ -13,7 +13,7 @@ import com.instantloanguide.allloantips.utils.ShowAds;
 public class IncomeResourceActivity extends AppCompatActivity {
 
     ActivityIncomeResourceBinding binding;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

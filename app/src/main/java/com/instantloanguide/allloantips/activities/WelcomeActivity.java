@@ -35,7 +35,7 @@ public class WelcomeActivity extends AppCompatActivity {
     ActivityWelcomeBinding binding;
     MaterialAlertDialogBuilder builder;
     ApiInterface apiInterface;
-    Map<String,String> map = new HashMap<>();
+  //  Map<String,String> map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,32 +66,32 @@ public class WelcomeActivity extends AppCompatActivity {
         });
         binding.shareBtn.setOnClickListener(view -> CommonMethods.shareApp(this));
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            String name = account.getDisplayName();
-            String email = account.getEmail();
-            map.put("name", name);
-            map.put("email", email);
-            uploadUserData(map);
-        }
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//        if (account != null) {
+//            String name = account.getDisplayName();
+//            String email = account.getEmail();
+//            map.put("name", name);
+//            map.put("email", email);
+//            uploadUserData(map);
+//        }
     }
 
-    private void uploadUserData(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.uploadUserData(map);
-        call.enqueue(new Callback<MessageModel>() {
-            @Override
-            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                   // Toast.makeText(WelcomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-            }
-        });
-    }
+//    private void uploadUserData(Map<String, String> map) {
+//        Call<MessageModel> call = apiInterface.uploadUserData(map);
+//        call.enqueue(new Callback<MessageModel>() {
+//            @Override
+//            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+//                if (response.isSuccessful()) {
+//                    assert response.body() != null;
+//                   // Toast.makeText(WelcomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+//            }
+//        });
+//    }
 
     @Override
     public void onBackPressed() {

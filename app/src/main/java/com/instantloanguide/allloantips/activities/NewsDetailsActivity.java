@@ -25,7 +25,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     Button hindiPreview,englishPreview;
     TextView newsTitleTv,newsDescTv;
     ImageView newsImageView;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

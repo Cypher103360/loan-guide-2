@@ -71,13 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (count == 2) {
             new Handler().postDelayed(() -> {
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-                if (account != null) {
-                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
-                } else {
-                    startActivity(new Intent(MainActivity.this, SignUpActivity.class));
-                }
+//                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+//                if (account != null) {
+//                    startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+//                } else {
+//                    startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+//                }
                 finish();
             }, 100);
         }

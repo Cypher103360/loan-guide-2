@@ -31,7 +31,7 @@ import retrofit2.Response;
 public class CategoryActivity extends AppCompatActivity {
     
     ActivityCategoryBinding binding;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
     String emiCalUrl;
     ApiInterface apiInterface;
     Map<String,String> map = new HashMap<>();

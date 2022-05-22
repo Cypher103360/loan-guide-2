@@ -76,14 +76,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final String BroadCastStringForAction = "checkingInternet";
     private static final float END_SCALE = 0.7f;
     Dialog loading;
-    private static final int CAMERA_REQUEST = 100;
-    private static final int STORAGE_REQUEST = 200;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle;
-    String[] cameraPermission;
-    String[] storagePermission;
     int count = 1;
     String tipsUrl;
     ApiInterface apiInterface;
@@ -183,11 +179,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        // allowing permissions of gallery and camera
-        cameraPermission = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        storagePermission = new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-
         // Setting Version Code
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
@@ -273,8 +264,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
-
-
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -312,15 +301,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 showDisclaimer();
                 break;
 
-            case R.id.nav_signOut:
-                loading.show();
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SignOut Menu");
-                mFirebaseAnalytics.logEvent("Clicked_On_SignOut_Menu", bundle);
-                // Sign Out for google user
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                if (account != null) {
-                    googleSignOut();
-                }
+//            case R.id.nav_signOut:
+//                loading.show();
+//                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SignOut Menu");
+//                mFirebaseAnalytics.logEvent("Clicked_On_SignOut_Menu", bundle);
+//                // Sign Out for google user
+//                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//                if (account != null) {
+//                    googleSignOut();
+//                }
             default:
         }
         return true;
@@ -359,8 +348,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         MenuItem nav_contact = navMenu.findItem(R.id.nav_contact);
         nav_contact.setEnabled(false);
 
-        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
-        nav_signOut.setEnabled(false);
+//        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
+//        nav_signOut.setEnabled(false);
 
         MenuItem nav_tips = navMenu.findItem(R.id.nav_finance_tips);
         nav_tips.setEnabled(false);
@@ -383,49 +372,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         MenuItem nav_contact = navMenu.findItem(R.id.nav_contact);
         nav_contact.setEnabled(true);
 
-        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
-        nav_signOut.setEnabled(true);
+//        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
+//        nav_signOut.setEnabled(true);
 
         MenuItem nav_tips = navMenu.findItem(R.id.nav_finance_tips);
         nav_tips.setEnabled(true);
     }
 
-    // Requesting camera and gallery
-    // permission if not given
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case CAMERA_REQUEST: {
-                if (grantResults.length > 0) {
-                    boolean camera_accepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeStomachache = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if (camera_accepted && writeStomachache) {
-                        pickFromGallery();
-                    } else {
-                        Toast.makeText(this, "Please Enable Camera and Storage Permissions", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-            break;
-            case STORAGE_REQUEST: {
-                if (grantResults.length > 0) {
-                    boolean writeStomachache = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (writeStomachache) {
-                        pickFromGallery();
-                    } else {
-                        Toast.makeText(this, "Please Enable Storage Permissions", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-            break;
-        }
-    }
 
-    // Here we will pick image from gallery or camera
-    private void pickFromGallery() {
-        CropImage.activity().start(this);
-    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -439,6 +393,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -457,13 +412,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(receiver, intentFilter);
     }
 
-    public void googleSignOut() {
-        gsc.signOut().addOnCompleteListener(task -> {
-            finish();
-            loading.dismiss();
-            startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
-        });
-    }
+//    public void googleSignOut() {
+//        gsc.signOut().addOnCompleteListener(task -> {
+//            finish();
+//            loading.dismiss();
+//            startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
+//        });
+//    }
 
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {

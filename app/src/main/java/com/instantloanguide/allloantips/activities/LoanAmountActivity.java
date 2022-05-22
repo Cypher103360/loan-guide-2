@@ -16,7 +16,7 @@ public class LoanAmountActivity extends AppCompatActivity {
 
     ActivityLoanAmountBinding binding;
     String id;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

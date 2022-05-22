@@ -39,7 +39,7 @@ import retrofit2.Response;
 public class LoanTypeFragment extends Fragment {
 
     FragmentLoanTypeBinding binding;
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
     ApiInterface apiInterface;
     Dialog loading;
     String banUrl, emiCalUrl;

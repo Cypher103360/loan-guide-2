@@ -37,7 +37,7 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
     String key, title;
     Dialog loading;
     List<LoanAppModel> loanAppModels = new ArrayList<>();
-    ShowAds showAds;
+    ShowAds showAds = new ShowAds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

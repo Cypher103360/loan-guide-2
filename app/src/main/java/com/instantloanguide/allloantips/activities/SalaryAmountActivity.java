@@ -14,11 +14,10 @@ import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 public class SalaryAmountActivity extends AppCompatActivity {
-
     String id;
     ActivitySalaryAmountBinding binding;
+    ShowAds showAds = new ShowAds();
 
-    ShowAds showAds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
