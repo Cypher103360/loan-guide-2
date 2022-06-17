@@ -28,16 +28,15 @@ import com.instantloanguide.allloantips.models.BannerModelList;
 import com.instantloanguide.allloantips.models.TipsClickInterface;
 import com.instantloanguide.allloantips.models.TipsModel;
 import com.instantloanguide.allloantips.models.TipsViewModel;
-import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -70,12 +69,17 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         loadingDialog = CommonMethods.getDialog(requireContext());
         loadingDialog.show();
         setTipsData(requireActivity());
-        if (Objects.equals(Paper.book().read(Prevalent.networkName), "IronSourceWithMeta")) {
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
-        } else {
-            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
-            getLifecycle().addObserver(showAds);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
 
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+
+        } else {
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
 
         binding.swipeRefresh.setOnRefreshListener(() -> {
@@ -141,12 +145,14 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
 
     @Override
     public void onClicked(TipsModel tipsModel) {
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         showAds.showInterstitialAds(requireActivity());
 
         Intent intent = new Intent(requireActivity(), TipsDetailActivity.class);
         intent.putExtra("id", tipsModel.getId());
         intent.putExtra("title", tipsModel.getTipsTitle());
+        intent.putExtra("engTitle", tipsModel.getTipsEngTitle());
+        intent.putExtra("url", tipsModel.getTipsUrl());
         intent.putExtra("engDesc", tipsModel.getTipsEngDesc());
         intent.putExtra("hinDesc", tipsModel.getTipsHinDesc());
         startActivity(intent);
@@ -158,5 +164,17 @@ public class TipsFragment extends Fragment implements TipsClickInterface {
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "TIPS LIST");
         firebaseAnalytics.logEvent("Clicked_Tips_Items", bundle);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }

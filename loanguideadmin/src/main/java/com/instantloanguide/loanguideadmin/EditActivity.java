@@ -65,7 +65,8 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
     TipsAdapter tipsAdapter;
     TipsViewModel tipsViewModel;
     MaterialAlertDialogBuilder builder;
-    String titleTXt, englishTxt, hindiTxt;
+    String hindiTitleTXt, engTitleTXt, url, englishTxt, hindiTxt;
+
     String encodedImage;
     Bitmap bitmap;
     NewsCardLayoutBinding cardLayoutBinding;
@@ -243,7 +244,7 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
     public void onclicked(NewsModel newsModel) {
         builder.setPositiveButton("Edit", (dialog, which) -> {
 
-            showNewsDialog("Update News", newsModel.getId(), newsModel.getNewsImg(), newsModel.getNewsTitle(), newsModel.getNewsEngDesc(), newsModel.getNewsHinDesc());
+            showNewsDialog("Update News", newsModel.getId(), newsModel.getNewsImg(), newsModel.getNewsTitle(), newsModel.getNewsEngTitle(), newsModel.getUrl(), newsModel.getNewsEngDesc(), newsModel.getNewsHinDesc());
         });
         builder.show();
     }
@@ -252,14 +253,14 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
     public void onclicked(TipsModel tipsModel) {
         builder.setPositiveButton("Edit", (dialog, which) -> {
 
-            showNewsDialog("Update tips", tipsModel.getId(), null, tipsModel.getTipsTitle(), tipsModel.getTipsEngDesc(), tipsModel.getTipsHinDesc());
+            showNewsDialog("Update tips", tipsModel.getId(), null, tipsModel.getTipsTitle(), tipsModel.getTipsEngTitle(), tipsModel.getTipsUrl(), tipsModel.getTipsEngDesc(), tipsModel.getTipsHinDesc());
 
         });
         builder.show();
 
     }
 
-    private void showNewsDialog(String dialogName, String id, String newsImg, String newsTitle, String newsEngDesc, String newsHinDesc) {
+    private void showNewsDialog(String dialogName, String id, String newsImg, String newsTitle, String newsEngTitle, String newsUrl, String newsEngDesc, String newsHinDesc) {
         cardLayoutBinding = NewsCardLayoutBinding.inflate(getLayoutInflater());
         dialog = new Dialog(this);
 
@@ -279,6 +280,9 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
         }
         cardLayoutBinding.title.setText(dialogName);
         cardLayoutBinding.itemTitle.setText(newsTitle);
+        cardLayoutBinding.itemEngTitle.setText(newsTitle);
+        cardLayoutBinding.itemEngTitle.setText(newsEngTitle);
+        cardLayoutBinding.itemUrl.setText(newsUrl);
         cardLayoutBinding.englishDesc.setText(newsEngDesc);
         cardLayoutBinding.hindiDesc.setText(newsHinDesc);
 
@@ -290,14 +294,24 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
         cardLayoutBinding.backBtn.setOnClickListener(view -> dialog.cancel());
         cardLayoutBinding.okBtn.setOnClickListener(view -> {
 
-            titleTXt = cardLayoutBinding.itemTitle.getText().toString();
+            hindiTitleTXt = cardLayoutBinding.itemTitle.getText().toString();
+            engTitleTXt = cardLayoutBinding.itemEngTitle.getText().toString();
+            url = cardLayoutBinding.itemUrl.getText().toString();
             englishTxt = cardLayoutBinding.englishDesc.getText().toString();
             hindiTxt = cardLayoutBinding.hindiDesc.getText().toString();
 
             if (dialogName.equals("Update tips")) {
 
-                if (TextUtils.isEmpty(titleTXt)) {
+                if (TextUtils.isEmpty(hindiTitleTXt)) {
                     cardLayoutBinding.itemTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(engTitleTXt)) {
+                    cardLayoutBinding.itemEngTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(url)) {
+                    cardLayoutBinding.itemUrl.setError("Title required!");
 
                 } else if (TextUtils.isEmpty(englishTxt)) {
                     cardLayoutBinding.englishDesc.setError("Field required!");
@@ -307,9 +321,11 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
                 } else {
                     loadingDialog.show();
                     map.put("id", id.trim());
-                    map.put("title", cardLayoutBinding.itemTitle.getText().toString());
-                    map.put("engDesc", cardLayoutBinding.englishDesc.getText().toString());
-                    map.put("hinDesc", cardLayoutBinding.hindiDesc.getText().toString());
+                    map.put("title", hindiTitleTXt);
+                    map.put("engTitle", engTitleTXt);
+                    map.put("url", url);
+                    map.put("englishDesc", englishTxt);
+                    map.put("hindiDesc", hindiTxt);
                     updateData(map, "Update Tips");
 
                 }
@@ -318,8 +334,16 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
                 if (encodedImage == null) {
                     Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
 
-                } else if (TextUtils.isEmpty(titleTXt)) {
+                } else if (TextUtils.isEmpty(hindiTitleTXt)) {
                     cardLayoutBinding.itemTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(engTitleTXt)) {
+                    cardLayoutBinding.itemEngTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(url)) {
+                    cardLayoutBinding.itemUrl.setError("Title required!");
 
                 } else if (TextUtils.isEmpty(englishTxt)) {
                     cardLayoutBinding.englishDesc.setError("Field required!");
@@ -334,21 +358,24 @@ public class EditActivity extends AppCompatActivity implements NewsClickInterfac
                         map.put("img", encodedImage);
                         map.put("deleteImg", newsImg);
                         map.put("imgKey", "0");
-                        map.put("title", cardLayoutBinding.itemTitle.getText().toString());
-                        map.put("engDesc", cardLayoutBinding.englishDesc.getText().toString());
-                        map.put("hinDesc", cardLayoutBinding.hindiDesc.getText().toString());
-
+                        map.put("title", hindiTitleTXt);
+                        map.put("engTitle", engTitleTXt);
+                        map.put("url", url);
+                        map.put("englishDesc", englishTxt);
+                        map.put("hindiDesc", hindiTxt);
                         updateData(map, "Update News");
                     }
+
                     if (encodedImage.length() > 100) {
                         map.put("id", id.trim());
                         map.put("img", encodedImage);
                         map.put("deleteImg", newsImg);
                         map.put("imgKey", "1");
-                        map.put("title", cardLayoutBinding.itemTitle.getText().toString());
-                        map.put("engDesc", cardLayoutBinding.englishDesc.getText().toString());
-                        map.put("hinDesc", cardLayoutBinding.hindiDesc.getText().toString());
-
+                        map.put("title", hindiTitleTXt);
+                        map.put("engTitle", engTitleTXt);
+                        map.put("url", url);
+                        map.put("englishDesc", englishTxt);
+                        map.put("hindiDesc", hindiTxt);
                         updateData(map, "Update News");
                     }
 

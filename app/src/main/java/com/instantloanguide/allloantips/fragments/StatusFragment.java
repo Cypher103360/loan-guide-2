@@ -41,6 +41,7 @@ import com.instantloanguide.allloantips.models.MessageModel;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -111,12 +112,17 @@ public class StatusFragment extends Fragment {
         recyclerView.setAdapter(loanDataAdapter);
         loanModelView = new ViewModelProvider(requireActivity()).get(LoanModelView.class);
         showLoanData();
-        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
-        } else {
-            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
-            getLifecycle().addObserver(showAds);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
 
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+
+        } else {
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
 
         addLoanBtn.setOnClickListener(v -> AddLoanDialog(requireContext()));
@@ -237,6 +243,19 @@ public class StatusFragment extends Fragment {
 
 
     private void pickFromGallery() {
+
         CropImage.activity().start(requireActivity());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }

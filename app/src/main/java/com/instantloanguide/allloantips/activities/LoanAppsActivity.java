@@ -19,6 +19,7 @@ import com.instantloanguide.allloantips.models.LoanAppModelList;
 import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,6 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
             binding.refreshLayout.setRefreshing(false);
         });
 
-         showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         binding.backBtn.setOnClickListener(view -> {
@@ -98,7 +98,7 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
 
     @Override
     public void onBackPressed() {
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         super.onBackPressed();
         finish();
     }
@@ -106,7 +106,7 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
     @Override
     public void onItemClicked(LoanAppModel loanAppModel, int position) {
         showAds.showInterstitialAds(this);
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         Intent intent = new Intent(LoanAppsActivity.this, AppDetailsActivity.class);
         intent.putExtra("img", loanAppModel.getImg());
         intent.putExtra("name", loanAppModel.getTitle());
@@ -116,5 +116,25 @@ public class LoanAppsActivity extends AppCompatActivity implements LoanAppsAdapt
         intent.putExtra("requirement", loanAppModel.getRequirement());
         intent.putExtra("url", loanAppModel.getUrl());
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showAds.showTopBanner(this, binding.adViewTop);
+        showAds.showBottomBanner(this, binding.adViewBottom);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }

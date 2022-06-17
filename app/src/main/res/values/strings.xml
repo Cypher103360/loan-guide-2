@@ -28,5 +28,8 @@
     <string name="loan_amount">Loan Amount</string>
     <string name="loan_company_name">Loan Company Name</string>
     <string name="finance_tips">Finance Tips</string>
+    <string name="read_more">Read More</string>
+    <string name="read_more_hindi">और पढ़ें।</string>
+    <string name="news_data">News Data</string>
 
 </resources>

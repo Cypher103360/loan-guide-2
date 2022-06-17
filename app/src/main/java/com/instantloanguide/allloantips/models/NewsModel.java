@@ -2,12 +2,14 @@ package com.instantloanguide.allloantips.models;
 
 public class NewsModel {
 
-    String id, newsImg, newsTitle, newsEngDesc, newsHinDesc;
+    String id, newsImg, newsTitle, newsEngTitle, url, newsEngDesc, newsHinDesc;
 
-    public NewsModel(String id, String newsImg, String newsTitle, String newsEngDesc, String newsHinDesc) {
+    public NewsModel(String id, String newsImg, String newsTitle, String newsEngTitle, String url, String newsEngDesc, String newsHinDesc) {
         this.id = id;
         this.newsImg = newsImg;
         this.newsTitle = newsTitle;
+        this.newsEngTitle = newsEngTitle;
+        this.url = url;
         this.newsEngDesc = newsEngDesc;
         this.newsHinDesc = newsHinDesc;
     }
@@ -22,6 +24,14 @@ public class NewsModel {
 
     public String getNewsTitle() {
         return newsTitle;
+    }
+
+    public String getNewsEngTitle() {
+        return newsEngTitle;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getNewsEngDesc() {

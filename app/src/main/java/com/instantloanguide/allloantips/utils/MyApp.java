@@ -3,30 +3,23 @@ package com.instantloanguide.allloantips.utils;
 import static android.content.ContentValues.TAG;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.instantloanguide.allloantips.activities.HomeActivity;
-import com.instantloanguide.allloantips.activities.WelcomeActivity;
 import com.instantloanguide.allloantips.models.AdsModel;
-import com.instantloanguide.allloantips.models.AdsModelList;
 import com.instantloanguide.allloantips.models.ApiInterface;
 import com.instantloanguide.allloantips.models.ApiWebServices;
+import com.instantloanguide.allloantips.models.OwnTextUrlModel;
 import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
 
+import java.util.List;
 import java.util.Objects;
 
 import io.paperdb.Paper;
@@ -45,18 +38,6 @@ public class MyApp extends Application {
         mInstance = this;
     }
 
-    public static void showAdmobBannerAd(Context context, RelativeLayout container) {
-        MobileAds.initialize(context);
-        id = Paper.book().read(Prevalent.admobBannerAds);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        AdView adView = new AdView(context);
-        container.addView(adView);
-        adView.setAdUnitId(id);
-        adView.setAdSize(AdSize.BANNER);
-        adView.loadAd(adRequest);
-        container.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -72,54 +53,73 @@ public class MyApp extends Application {
 
     private void fetchAds() {
         apiInterface = ApiWebServices.getApiInterface();
-        Call<AdsModelList> call = apiInterface.fetchAds("LoanGuide");
-        call.enqueue(new Callback<AdsModelList>() {
+        Call<List<AdsModel>> call = apiInterface.fetchAds("LoanGuide");
+        call.enqueue(new Callback<List<AdsModel>>() {
             @Override
-            public void onResponse(@NonNull Call<AdsModelList> call, @NonNull Response<AdsModelList> response) {
+            public void onResponse(@NonNull Call<List<AdsModel>> call, @NonNull Response<List<AdsModel>> response) {
                 if (response.isSuccessful()) {
-                    if (Objects.requireNonNull(response.body()).getData() != null) {
-                        for (AdsModel ads : response.body().getData()) {
-                            Log.e("adsId", ads.getId() + ads.getNetworkName());
+                    if (response.body() != null) {
+                        for (AdsModel ads : response.body()) {
+                            Log.d("checkIds",
+                                    ads.getId()
+                                            + "\n" + ads.getAppId()
+                                            + "\n" + ads.getAppLovinAppKey()
+                                            + "\n" + ads.getBannerTop()
+                                            + "\n" + ads.getBannerTopAdNetwork()
+                                            + "\n" + ads.getBannerBottom()
+                                            + "\n" + ads.getBannerBottomAdNetwork()
+                                            + "\n" + ads.getInterstitial()
+                                            + "\n" + ads.getInterstitalAdNetwork()
+                                            + "\n" + ads.getNativeAd()
+                                            + "\n" + ads.getNativeAdNetwork()
+                                            + "\n" + ads.getNativeType()
+                                            + "\n" + ads.getRewardAd()
+                                            + "\n" + ads.getRewardAdNetwork()
+                            );
 
-                            Paper.book().write(Prevalent.appId, ads.getAdmobAppKey());
+                            Paper.book().write(Prevalent.id, ads.getId());
+                            Paper.book().write(Prevalent.appId, ads.getAppId());
                             Paper.book().write(Prevalent.appLovinId, ads.getAppLovinAppKey());
-                            Paper.book().write(Prevalent.openAppAds, ads.getAppOpen());
-                            Paper.book().write(Prevalent.admobBannerAds, ads.getAdmobBanner());
-                            Paper.book().write(Prevalent.nativeAds, ads.getNativeADs());
-                            Paper.book().write(Prevalent.bannerAds, ads.getBanner());
+                            Paper.book().write(Prevalent.bannerTop, ads.getBannerTop());
+                            Paper.book().write(Prevalent.bannerTopNetworkName, ads.getBannerTopAdNetwork());
+                            Paper.book().write(Prevalent.bannerBottom, ads.getBannerBottom());
+                            Paper.book().write(Prevalent.bannerBottomNetworkName, ads.getBannerBottomAdNetwork());
                             Paper.book().write(Prevalent.interstitialAds, ads.getInterstitial());
-                            Paper.book().write(Prevalent.networkName, ads.getNetworkName());
-//                            new AppOpenManager(mInstance, Paper.book().read(Prevalent.openAppAds), mInstance);
+                            Paper.book().write(Prevalent.interstitialNetwork, ads.getInterstitalAdNetwork());
+                            Paper.book().write(Prevalent.nativeAds, ads.getNativeAd());
+                            Paper.book().write(Prevalent.nativeAdsNetworkName, ads.getNativeAdNetwork());
+                            Paper.book().write(Prevalent.nativeAdsType, ads.getNativeType());
+                            Paper.book().write(Prevalent.rewardAds, ads.getRewardAd());
+                            Paper.book().write(Prevalent.rewardAdsNetwork, ads.getRewardAdNetwork());
 
-                            try {
-                                ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                                Bundle bundle = ai.metaData;
-                                String myApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
-                                Log.d(TAG, "Name Found: " + myApiKey);
-                                ai.metaData.putString("com.google.android.gms.ads.APPLICATION_ID", Paper.book().read(Prevalent.appId));//you can replace your key APPLICATION_ID here
-                                String ApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
-                                Log.d(TAG, "ReNamed Found: " + ApiKey);
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
-                            } catch (NullPointerException e) {
-                                Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
-                            }
+                        }
 
-                            try {
-                                ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                                Bundle bundle = ai.metaData;
-                                String myApiKey = bundle.getString("applovin.sdk.key");
-                                Log.d(TAG, "Name Found: " + myApiKey);
-                                ai.metaData.putString("applovin.sdk.key", Paper.book().read(Prevalent.appLovinId));     //you can replace your key APPLICATION_ID here
-                                String ApiKey = bundle.getString("applovin.sdk.key");
-                                Log.d(TAG, "ReNamed Found: " + ApiKey);
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
-                            } catch (NullPointerException e) {
-                                Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
-                            }
+                        try {
+                            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                            Bundle bundle = ai.metaData;
+                            String myApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
+                            Log.d(TAG, "Name Found: " + myApiKey);
+                            ai.metaData.putString("com.google.android.gms.ads.APPLICATION_ID", Paper.book().read(Prevalent.appId));//you can replace your key APPLICATION_ID here
+                            String ApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
+                            Log.d(TAG, "ReNamed Found: " + ApiKey);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+                        }
 
-
+                        try {
+                            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                            Bundle bundle = ai.metaData;
+                            String myApiKey = bundle.getString("applovin.sdk.key");
+                            Log.d(TAG, "Name Found: " + myApiKey);
+                            ai.metaData.putString("applovin.sdk.key", Paper.book().read(Prevalent.appLovinId));     //you can replace your key APPLICATION_ID here
+                            String ApiKey = bundle.getString("applovin.sdk.key");
+                            Log.d(TAG, "ReNamed Found: " + ApiKey);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
                         }
                     }
                 } else {
@@ -129,20 +129,30 @@ public class MyApp extends Application {
             }
 
             @Override
-            public void onFailure(@NonNull Call<AdsModelList> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<AdsModel>> call, @NonNull Throwable t) {
                 Log.d("adsError", t.getMessage());
+            }
+        });
+
+        Call<OwnTextUrlModel> modelCall = apiInterface.fetchOwnText();
+        modelCall.enqueue(new Callback<OwnTextUrlModel>() {
+            @Override
+            public void onResponse(@NonNull Call<OwnTextUrlModel> call, @NonNull Response<OwnTextUrlModel> response) {
+                if (response.isSuccessful()) {
+                    Paper.book().write(Prevalent.title, Objects.requireNonNull(response.body()).getTitle());
+                    Paper.book().write(Prevalent.url, response.body().getUrl());
+                    Log.d("ContentValue", Paper.book().read(Prevalent.title) + "  " + Paper.book().read(Prevalent.url));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<OwnTextUrlModel> call, @NonNull Throwable t) {
+                Log.d("ContentValueError", t.getMessage());
+
             }
         });
     }
 
-    public void intent() {
-        if (!AppOpenManager.isIsShowingAd) {
-            Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            AppOpenManager.isIsShowingAd = false;
-        }
-    }
 
     private class ExampleNotificationOpenedHandler implements OneSignal.OSNotificationOpenedHandler {
         @Override

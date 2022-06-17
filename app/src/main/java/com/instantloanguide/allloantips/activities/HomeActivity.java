@@ -1,7 +1,6 @@
 package com.instantloanguide.allloantips.activities;
 
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 import static com.instantloanguide.allloantips.fragments.StatusFragment.setImage;
 
 import android.annotation.SuppressLint;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,11 +36,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -61,11 +54,13 @@ import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.MyReceiver;
 import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -75,22 +70,23 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
     private static final float END_SCALE = 0.7f;
+    public static Uri uri;
     Dialog loading;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
+    //    GoogleSignInOptions gso;
+//    GoogleSignInClient gsc;
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle;
     int count = 1;
     String tipsUrl;
     ApiInterface apiInterface;
-    Map<String,String> map = new HashMap<>();
-    public static Uri uri;
+    Map<String, String> map = new HashMap<>();
     ImageView navMenu, headerImage;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ConstraintLayout categoryContainer;
     IntentFilter intentFilter;
     SectionsPagerAdapter sectionsPagerAdapter;
+    ShowAds showAds = new ShowAds();
     private ActivityHomeBinding binding;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -115,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
         enableNavItems();
-        map.put("title","finance_tips");
+        map.put("title", "finance_tips");
         fetchTipsUrl(map);
         if (count == 2) {
             ViewPager viewPager = binding.viewPager;
@@ -162,8 +158,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(this, gso);
+//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+//        gsc = GoogleSignIn.getClient(this, gso);
         loading = CommonMethods.getDialog(HomeActivity.this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         navigationView = binding.navigation;
@@ -171,13 +167,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navMenu = binding.navMenu;
         bundle = new Bundle();
         drawerLayout = binding.drawerLayout;
-        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")){
-            ShowAds showAds = new ShowAds(this, binding.topAdView, null);
-            getLifecycle().addObserver(showAds);
-        }else {
-            binding.topAdView.setVisibility(View.GONE);
-        }
-
+        getLifecycle().addObserver(showAds);
 
         // Setting Version Code
         try {
@@ -290,8 +280,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mFirebaseAnalytics.logEvent("Selected_rate_menu_item", bundle);
                 break;
             case R.id.nav_privacy:
-                Intent intent = new Intent(HomeActivity.this,PrivacyPolicyActivity.class);
-                intent.putExtra("key","policy");
+                Intent intent = new Intent(HomeActivity.this, PrivacyPolicyActivity.class);
+                intent.putExtra("key", "policy");
                 startActivity(intent);
                 break;
             case R.id.nav_share:
@@ -403,12 +393,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
+        IronSource.onPause(this);
         unregisterReceiver(receiver);
+        showAds.destroyBanner();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
     }
 
@@ -427,5 +421,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            showAds.showTopBanner(this, binding.topAdView);
+
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            showAds.showBottomBanner(this, binding.BottomAdview);
+        }
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        showAds.destroyBanner();
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+        finish();
+        if (Objects.equals(Paper.book().read(Prevalent.interstitialNetwork), "AdmobWithMeta"))
+            showAds.showInterstitialAds(this);
+
     }
 }
