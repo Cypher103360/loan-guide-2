@@ -37,6 +37,7 @@ import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,12 +77,17 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
         loadingDialog.show();
         setNewsData(requireActivity());
 
-        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
-        } else {
-            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
-            getLifecycle().addObserver(showAds);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
 
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+
+        } else {
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -150,12 +156,14 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
     @Override
     public void onClicked(NewsModel newsModel) {
 
-        Ads.destroyBanner();
         showAds.showInterstitialAds(requireActivity());
+        showAds.destroyBanner();
         Intent intent = new Intent(getContext(), NewsDetailsActivity.class);
         intent.putExtra("id",newsModel.getId());
         intent.putExtra("image",newsModel.getNewsImg());
         intent.putExtra("title",newsModel.getNewsTitle());
+        intent.putExtra("engTitle",newsModel.getNewsEngTitle());
+        intent.putExtra("url",newsModel.getUrl());
         intent.putExtra("engDesc",newsModel.getNewsEngDesc());
         intent.putExtra("hinDesc",newsModel.getNewsHinDesc());
         startActivity(intent);
@@ -167,5 +175,16 @@ public class NewsFragment extends Fragment implements NewsClickInterface {
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "NEWS LIST");
         firebaseAnalytics.logEvent("Clicked_News_Items", bundle);
 
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }

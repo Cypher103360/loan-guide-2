@@ -2,20 +2,26 @@ package com.instantloanguide.loanguideadmin.services;
 
 import com.instantloanguide.loanguideadmin.models.AdsModelList;
 import com.instantloanguide.loanguideadmin.models.BannerModelList;
+import com.instantloanguide.loanguideadmin.models.LoanAdsModel;
 import com.instantloanguide.loanguideadmin.models.LoanAppModelList;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
 import com.instantloanguide.loanguideadmin.models.NewsModelList;
+import com.instantloanguide.loanguideadmin.models.OwnTextUrlModel;
 import com.instantloanguide.loanguideadmin.models.TipsModelList;
 import com.instantloanguide.loanguideadmin.models.UrlModelList;
 import com.instantloanguide.loanguideadmin.models.UserData.UserDataModelList;
 
+import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiInterface {
     @FormUrlEncoded
@@ -27,13 +33,22 @@ public interface ApiInterface {
     Call<MessageModel> uploadTips(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
+    @POST("loan_guide_ads_update.php")
+    Call<MessageModel> updateLoanAdIds(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("loan_fetch_ads.php")
+    Call<List<LoanAdsModel>> fetchLoanAds(@Field("id") String id);
+
+    @FormUrlEncoded
     @POST("upload_strip_ban_api.php")
     Call<MessageModel> uploadStripBan(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("update_news_api.php")
     Call<MessageModel> updateNews(@FieldMap Map<String, String> map);
- @FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("update_loan_app_data_api.php")
     Call<MessageModel> updateLoanAppsData(@FieldMap Map<String, String> map);
 
@@ -67,9 +82,13 @@ public interface ApiInterface {
     @POST("fetch_banners.php")
     Call<BannerModelList> fetchBanner(@FieldMap Map<String, String> map);
 
-    @FormUrlEncoded
+    @Multipart
     @POST("update_banner.php")
-    Call<MessageModel> updateBanner(@FieldMap Map<String, String> map);
+    Call<MessageModel> updateBanner(@Part MultipartBody.Part idPart,
+                                    @Part MultipartBody.Part imgPart,
+                                    @Part MultipartBody.Part urlPart,
+                                    @Part MultipartBody.Part deleteImgPart,
+                                    @Part MultipartBody.Part imgKeyPart);
 
     @FormUrlEncoded
     @POST("upload_loan_app_data.php")
@@ -91,6 +110,15 @@ public interface ApiInterface {
     @POST("update_urls.php")
     Call<MessageModel> updateUrls(@FieldMap Map<String, String> map);
 
+
+    @POST("fetch_own_text_url.php")
+    Call<OwnTextUrlModel> fetchOwnText();
+
     @POST("fetch_user_data.php")
     Call<UserDataModelList> getAllUserData();
+
+    @FormUrlEncoded
+    @POST("update_own_text.php")
+    Call<MessageModel> updateOwnText(@FieldMap Map<String, String> map);
+
 }

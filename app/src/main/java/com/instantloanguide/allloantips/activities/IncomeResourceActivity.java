@@ -1,6 +1,8 @@
 package com.instantloanguide.allloantips.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,7 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.instantloanguide.allloantips.databinding.ActivityIncomeResourceBinding;
 import com.instantloanguide.allloantips.utils.Ads;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
+
+import io.paperdb.Paper;
 
 public class IncomeResourceActivity extends AppCompatActivity {
 
@@ -21,16 +27,19 @@ public class IncomeResourceActivity extends AppCompatActivity {
         binding = ActivityIncomeResourceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
 
         binding.backBtn.setOnClickListener(view -> {
             onBackPressed();
         });
+        binding.textView15.setText(Paper.book().read(Prevalent.title));
+        binding.ownTextUrl.setOnClickListener(view -> {
+            openWebPage(Paper.book().read(Prevalent.url));
+        });
         binding.salariedCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ads.destroyBanner();
+                showAds.destroyBanner();
                 showAds.showInterstitialAds(IncomeResourceActivity.this);
                 Intent intent = new Intent(IncomeResourceActivity.this, LoanAmountActivity.class);
                 intent.putExtra("id", "salaried");
@@ -41,7 +50,7 @@ public class IncomeResourceActivity extends AppCompatActivity {
         binding.selfEmployedCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ads.destroyBanner();
+                showAds.destroyBanner();
                 showAds.showInterstitialAds(IncomeResourceActivity.this);
                 Intent intent = new Intent(IncomeResourceActivity.this, LoanAmountActivity.class);
                 intent.putExtra("id", "self");
@@ -52,7 +61,7 @@ public class IncomeResourceActivity extends AppCompatActivity {
         binding.studentCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ads.destroyBanner();
+                showAds.destroyBanner();
                 showAds.showInterstitialAds(IncomeResourceActivity.this);
                 Intent intent = new Intent(IncomeResourceActivity.this, LoanAmountActivity.class);
                 intent.putExtra("id", "student");
@@ -63,7 +72,7 @@ public class IncomeResourceActivity extends AppCompatActivity {
         binding.unemployedCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ads.destroyBanner();
+                showAds.destroyBanner();
                 showAds.showInterstitialAds(IncomeResourceActivity.this);
                 Intent intent = new Intent(IncomeResourceActivity.this, LoanAmountActivity.class);
                 intent.putExtra("id", "unemployed");
@@ -76,7 +85,35 @@ public class IncomeResourceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showAds.showTopBanner(this, binding.adViewTop);
+        showAds.showBottomBanner(this, binding.adViewBottom);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
+    }
+    @SuppressLint("QueryPermissionsNeeded")
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

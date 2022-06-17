@@ -20,12 +20,15 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.AdLayoutBinding;
 import com.instantloanguide.allloantips.models.LoanAppModel;
+import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import io.paperdb.Paper;
 
 public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -114,9 +117,7 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             appIcon = itemView.findViewById(R.id.app_image);
             applyBtn = itemView.findViewById(R.id.apply_now_btn);
 
-
         }
-
 
     }
 
@@ -128,9 +129,12 @@ public class LoanAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             binding = AdLayoutBinding.bind(itemAdView2);
         }
         private void bindAdData() {
-            showAds.showNativeAds(context, binding.adLayout);
+            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+                showAds.showNativeAds(context, binding.adLayout);
+            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+                showAds.showMrec(context, binding.adLayout);
+            }
         }
-
     }
 
 

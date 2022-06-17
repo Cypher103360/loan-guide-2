@@ -31,6 +31,7 @@ public class CommonMethods {
         return loadingDialog;
     }
 
+
     public static void shareApp(Context context) {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);

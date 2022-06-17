@@ -9,25 +9,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.instantloanguide.allloantips.databinding.ActivityAppDetailsBinding;
-import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 public class AppDetailsActivity extends AppCompatActivity {
     ActivityAppDetailsBinding binding;
-    String name, interest, amount, age, requirement, url,image;
+    String name, interest, amount, age, requirement, url, image;
+
+    ShowAds showAds = new ShowAds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAppDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        getLifecycle().addObserver(showAds);
         binding.backBtn.setOnClickListener(view -> {
             onBackPressed();
         });
-
-        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
-        getLifecycle().addObserver(showAds);
 
         image = getIntent().getStringExtra("img");
         name = getIntent().getStringExtra("name");
@@ -40,7 +39,7 @@ public class AppDetailsActivity extends AppCompatActivity {
         binding.actTitle.setText(name);
 
         Glide.with(AppDetailsActivity.this).load(
-                "https://gedgetsworld.in/Loan_App/loan_app_images/"+image).into(binding.appImage);
+                "https://gedgetsworld.in/Loan_App/loan_app_images/" + image).into(binding.appImage);
         binding.appName.setText(name);
         binding.appInterest.setText(interest);
         binding.appAmount.setText(amount);
@@ -54,18 +53,37 @@ public class AppDetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         finish();
     }
 
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
         Uri webpage = Uri.parse(url);
-        Ads.destroyBanner();
+        showAds.destroyBanner();
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage
         );
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showAds.showTopBanner(this, binding.adViewTop);
+        showAds.showBottomBanner(this, binding.adViewBottom);
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }

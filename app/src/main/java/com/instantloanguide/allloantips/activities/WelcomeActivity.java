@@ -1,41 +1,36 @@
 package com.instantloanguide.allloantips.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.instantloanguide.allloantips.R;
 import com.instantloanguide.allloantips.databinding.ActivityWelcomeBinding;
 import com.instantloanguide.allloantips.models.ApiInterface;
 import com.instantloanguide.allloantips.models.ApiWebServices;
-import com.instantloanguide.allloantips.models.MessageModel;
-import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class WelcomeActivity extends AppCompatActivity {
 
     ActivityWelcomeBinding binding;
     MaterialAlertDialogBuilder builder;
     ApiInterface apiInterface;
-  //  Map<String,String> map = new HashMap<>();
+    //  Map<String,String> map = new HashMap<>();
+
+    ShowAds showAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +38,25 @@ public class WelcomeActivity extends AppCompatActivity {
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 //        AppLovinSdk.getInstance( this ).showMediationDebugger();
-        ShowAds showAds = new ShowAds(this, binding.adViewTop, binding.adViewBottom);
+        showAds = new ShowAds();
         getLifecycle().addObserver(showAds);
-        apiInterface = ApiWebServices.getApiInterface();
+//        AppLovinSdk.getInstance(this).getSettings().setTestDeviceAdvertisingIds(Arrays.asList("145e514e-8593-4340-9233-fd54bc54c1e1"));
+        new Handler()
+                .postDelayed(() -> {
 
+                    showAds.showBottomBanner(this, findViewById(R.id.adView_bottom));
+                    showAds.showTopBanner(this, findViewById(R.id.adView_top));
+                }, 1000);
+
+        apiInterface = ApiWebServices.getApiInterface();
         binding.startBtn.setOnClickListener(view -> {
             binding.lottieRunning.setVisibility(View.VISIBLE);
             new Handler().postDelayed(() -> {
-                Ads.destroyBanner();
+                showAds.destroyBanner();
                 showAds.showInterstitialAds(this);
                 startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
                 binding.lottieRunning.setVisibility(View.GONE);
-            }, 500);
+            }, 3000);
         });
 
         binding.contactBtn.setOnClickListener(view -> {
@@ -64,6 +66,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
+
         binding.shareBtn.setOnClickListener(view -> CommonMethods.shareApp(this));
 
 //        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -95,26 +98,51 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        builder =
-                new MaterialAlertDialogBuilder(this);
-        builder.setTitle(R.string.app_name)
-                .setIcon(R.mipmap.ic_launcher)
-                .setMessage("Do You Really Want To Exit?\nAlso Rate Us 5 Star.")
-                .setNeutralButton("CANCEL", (dialog, which) -> {
-                });
+        ShowExitDialog();
+    }
 
 
-        builder.setNegativeButton("RATE APP", (dialog, which) -> CommonMethods.rateApp(getApplicationContext()))
-                .setPositiveButton("OK!!", (dialog, which) -> {
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
-                    moveTaskToBack(true);
-                    System.exit(0);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
 
-                });
-        builder.show();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
+    }
+
+    private void ShowExitDialog() {
+        Dialog exitDialog = new Dialog(WelcomeActivity.this);
+        exitDialog.setContentView(R.layout.exit_dialog_layout);
+        exitDialog.getWindow().setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT);
+        exitDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        exitDialog.setCancelable(false);
+        exitDialog.show();
+
+        TextView rateNow = exitDialog.findViewById(R.id.rate_now);
+        TextView okBtn = exitDialog.findViewById(R.id.ok);
+        ImageView cancelBtn = exitDialog.findViewById(R.id.dismiss_btn);
+
+        cancelBtn.setOnClickListener(v -> {
+            exitDialog.dismiss();
+        });
+        okBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+            moveTaskToBack(true);
+            System.exit(0);
+        });
+
+        rateNow.setOnClickListener(v -> {
+            CommonMethods.rateApp(getApplicationContext());
+        });
+
+
     }
 
 }

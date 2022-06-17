@@ -2,11 +2,13 @@ package com.instantloanguide.allloantips.models;
 
 public class TipsModel {
 
-    String id, tipsTitle,tipsEngDesc,tipsHinDesc;
+    String id, tipsTitle,tipsEngTitle,tipsUrl,tipsEngDesc,tipsHinDesc;
 
-    public TipsModel(String id, String tipsTitle, String tipsEngDesc, String tipsHinDesc) {
+    public TipsModel(String id, String tipsTitle, String tipsEngTitle, String tipsUrl, String tipsEngDesc, String tipsHinDesc) {
         this.id = id;
         this.tipsTitle = tipsTitle;
+        this.tipsEngTitle = tipsEngTitle;
+        this.tipsUrl = tipsUrl;
         this.tipsEngDesc = tipsEngDesc;
         this.tipsHinDesc = tipsHinDesc;
     }
@@ -17,6 +19,14 @@ public class TipsModel {
 
     public String getTipsTitle() {
         return tipsTitle;
+    }
+
+    public String getTipsEngTitle() {
+        return tipsEngTitle;
+    }
+
+    public String getTipsUrl() {
+        return tipsUrl;
     }
 
     public String getTipsEngDesc() {

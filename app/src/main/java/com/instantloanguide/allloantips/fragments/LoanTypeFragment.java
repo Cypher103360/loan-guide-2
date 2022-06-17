@@ -26,6 +26,7 @@ import com.instantloanguide.allloantips.utils.Ads;
 import com.instantloanguide.allloantips.utils.CommonMethods;
 import com.instantloanguide.allloantips.utils.Prevalent;
 import com.instantloanguide.allloantips.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -57,21 +58,27 @@ public class LoanTypeFragment extends Fragment {
         fetchTipsUrl();
 
 
-        if (Paper.book().read(Prevalent.networkName).equals("IronSourceWithMeta")) {
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+
         } else {
-            showAds = new ShowAds(requireActivity(), binding.adViewTop, binding.adViewBottom);
-            getLifecycle().addObserver(showAds);
+            showAds.showTopBanner(requireActivity(), binding.adViewTop);
+            showAds.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         binding.loanOrPersonal.setOnClickListener(view -> {
             showAds.showInterstitialAds(requireActivity());
-            Ads.destroyBanner();
+            showAds.destroyBanner();
             startActivity(new Intent(requireContext(), IncomeResourceActivity.class));
         });
         binding.anyOtherTypeLoan.setOnClickListener(view -> {
             showAds.showInterstitialAds(requireActivity());
 
-            Ads.destroyBanner();
+            showAds.destroyBanner();
             startActivity(new Intent(requireContext(), IncomeResourceActivity.class));
         });
 
@@ -81,6 +88,10 @@ public class LoanTypeFragment extends Fragment {
             } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+        });
+        binding.textView15.setText(Paper.book().read(Prevalent.title));
+        binding.ownTextUrl.setOnClickListener(view -> {
+            openWebPage(Paper.book().read(Prevalent.url));
         });
         binding.emiCalculator.setOnClickListener(view -> {
             openWebPage(emiCalUrl);
@@ -172,5 +183,17 @@ public class LoanTypeFragment extends Fragment {
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }

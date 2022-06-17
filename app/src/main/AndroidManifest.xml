@@ -86,7 +86,7 @@
             android:value="@string/app_id" />
         <meta-data
             android:name="applovin.sdk.key"
-            android:value="ksHAcmHXHidLv2Z4I8Xh935-zmB22WK7W0Ir0MXJR5s8z0lo2qfryQBIiyh53bG5PquxI4RSHOZZubFpt0v2Qi" />
+            android:value="GgLgSCRJuuwaT0BTcIsnQ1DPOdEioGgavMteEAVnFP4HrKRiBrwhezR0TgSh1L_oOZTelQGMC9PQeSHPsUf8fW" />
     </application>
 
 </manifest>

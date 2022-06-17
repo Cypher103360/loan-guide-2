@@ -6,7 +6,7 @@
     <string name="update_ads_ids">Update Ads Ids</string>
     <string name="enter_description">Enter English Description</string>
     <string name="enter_description1">Enter Hindi Description</string>
-    <string name="enter_title">Enter Title</string>
+    <string name="enter_title">Enter Hindi Title</string>
     <string name="upload">Upload</string>
     <string name="cancel">Cancel</string>
     <string name="todo">TODO</string>
@@ -38,5 +38,9 @@
     <string name="enter_url">Enter Url</string>
     <string name="show_loan_app_data">Show Loan App Data</string>
     <string name="show_user_data">Show User Data</string>
+    <string name="native_ads_type">Native Ads Type</string>
+    <string name="enter_english_title">Enter English Title</string>
+    <string name="upload_own_title_amp_url"><![CDATA[Upload Own Title & Url]]></string>
+    <string name="update_own_title_amp_url"><![CDATA[Update Own Title & Url]]></string>
 
 </resources>

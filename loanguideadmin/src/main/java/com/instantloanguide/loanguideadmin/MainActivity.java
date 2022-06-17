@@ -2,9 +2,11 @@ package com.instantloanguide.loanguideadmin;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -23,32 +25,43 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.instantloanguide.loanguideadmin.databinding.ActivityMainBinding;
+import com.instantloanguide.loanguideadmin.databinding.AdLayoutLoanGuideBinding;
 import com.instantloanguide.loanguideadmin.databinding.NewsCardLayoutBinding;
+import com.instantloanguide.loanguideadmin.databinding.OwnTextUrlLayoutBinding;
 import com.instantloanguide.loanguideadmin.databinding.UploadImageDialogBinding;
 import com.instantloanguide.loanguideadmin.models.AdsModel;
-import com.instantloanguide.loanguideadmin.models.AdsModelList;
 import com.instantloanguide.loanguideadmin.models.BannerModel;
 import com.instantloanguide.loanguideadmin.models.BannerModelList;
+import com.instantloanguide.loanguideadmin.models.LoanAdsModel;
 import com.instantloanguide.loanguideadmin.models.MessageModel;
+import com.instantloanguide.loanguideadmin.models.OwnTextUrlModel;
 import com.instantloanguide.loanguideadmin.models.UrlModel;
 import com.instantloanguide.loanguideadmin.models.UrlModelList;
 import com.instantloanguide.loanguideadmin.services.ApiInterface;
 import com.instantloanguide.loanguideadmin.services.ApiWebServices;
 import com.instantloanguide.loanguideadmin.utils.CommonMethods;
+import com.instantloanguide.loanguideadmin.utils.FileUtils;
 import com.instantloanguide.loanguideadmin.utils.Util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String key, adIdTitle;
-    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog, bannerDialog, urlsDialog;
-    String titleTXt, englishTxt, hindiTxt;
+    Dialog dialog, loadingDialog, stripBanDialog, adsUpdateDialog, bannerDialog, urlsDialog, loanGuideDialog;
+    String hindiTitleTXt, engTitleTXt, url, englishTxt, hindiTxt;
     String encodedImage, banTitle, banImg, mUrls, mUrlTitle;
     Bitmap bitmap;
     Button uploadBannerBtn;
@@ -75,8 +88,19 @@ public class MainActivity extends AppCompatActivity {
     TextView title;
     Intent intent;
     AutoCompleteTextView networkName;
-    String[] adsNetworks = {"AdmobWithMeta ", "IronSourceWithMeta", "AppLovinWithMeta", "Meta"};
+    //    String[] adsNetworks = {"AdmobWithMeta ", "IronSourceWithMeta", "AppLovinWithMeta", "Meta"};
+    AdLayoutLoanGuideBinding loanGuideBinding;
 
+    String[] items = new String[]{"AdmobWithMeta", "IronSourceWithMeta", "AppLovinWithMeta", "Meta"};
+    String[] item2 = new String[]{"Native", "MREC"};
+    AutoCompleteTextView BannerTopNetworkName, BannerBottomNetworkName, InterstitialNetwork, NativeAdsNetworkName, RewardAdsNetwork, nativeType;
+    EditText AppId, AppLovinSdkKey, BannerTop, BannerBottom, InterstitialAds, NativeAds, rewardAds;
+    Button UploadAdsBtn;
+    Dialog loading;
+    String appId, appLovinSdkKey, bannerTopNetworkName, bannerTop, bannerBottomNetworkName,
+            bannerBottom, interstitialNetwork, interstitialAds, nativeAdsNetworkName,
+            nativeAds, nativeAdsType, rewardAd, rewardAdsNetwork;
+    Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
         binding.uploadAds.setOnClickListener(view -> {
-            showUpdateAdsDialog("LoanGuide");
+            showUpdateLoanAdsDialog("LoanGuide");
         });
         binding.editBtn.setOnClickListener(view -> {
             startActivity(new Intent(this, EditActivity.class));
@@ -172,8 +196,84 @@ public class MainActivity extends AppCompatActivity {
             }).show();
         });
         binding.userDataBtn.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this,UserDataActivity.class));
+            startActivity(new Intent(MainActivity.this, UserDataActivity.class));
         });
+
+        binding.updateOwnTextBtn.setOnClickListener(view -> {
+            updateOwnTextUrl();
+        });
+    }
+
+    private void updateOwnTextUrl() {
+        Dialog ownTextDialog = new Dialog(this);
+        OwnTextUrlLayoutBinding ownTextUrlLayoutBinding = OwnTextUrlLayoutBinding.inflate(getLayoutInflater());
+        ownTextDialog.setContentView(ownTextUrlLayoutBinding.getRoot());
+        ownTextDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        ownTextDialog.setCancelable(false);
+        ownTextDialog.show();
+
+        EditText titleEd = ownTextUrlLayoutBinding.titleEdit;
+        EditText urlEd = ownTextUrlLayoutBinding.urEdit;
+        Button cancelBtn, uploadUrlsBtn;
+        cancelBtn = ownTextUrlLayoutBinding.cancelBtn;
+        cancelBtn.setOnClickListener(v -> {
+            ownTextDialog.dismiss();
+        });
+        uploadUrlsBtn = ownTextUrlLayoutBinding.uploadUrls;
+
+        Call<OwnTextUrlModel> call = apiInterface.fetchOwnText();
+        call.enqueue(new Callback<OwnTextUrlModel>() {
+            @Override
+            public void onResponse(@NonNull Call<OwnTextUrlModel> call, @NonNull Response<OwnTextUrlModel> response) {
+                if (response.isSuccessful()) {
+
+                    urlEd.setText(Objects.requireNonNull(response.body()).getUrl());
+                    titleEd.setText(response.body().getTitle());
+                    loadingDialog.dismiss();
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<OwnTextUrlModel> call, @NonNull Throwable t) {
+                loadingDialog.dismiss();
+            }
+        });
+
+        uploadUrlsBtn.setOnClickListener(v -> {
+            loadingDialog.show();
+            String url = urlEd.getText().toString().trim();
+            String title = titleEd.getText().toString().trim();
+            if (TextUtils.isEmpty(title)) {
+                titleEd.setError("Url Required");
+                titleEd.requestFocus();
+            } else if (TextUtils.isEmpty(url)) {
+                urlEd.setError("Url Required");
+                urlEd.requestFocus();
+            } else {
+                map.put("title", title);
+                map.put("url", url);
+                Call<MessageModel> modelCall = apiInterface.updateOwnText(map);
+                modelCall.enqueue(new Callback<MessageModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                        if (response.isSuccessful()) {
+                            assert response.body() != null;
+                            Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            loadingDialog.dismiss();
+                            ownTextDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                        loadingDialog.dismiss();
+                    }
+                });
+            }
+        });
+
     }
 
     private void updateUrlsDialog(Map<String, String> map, String title) {
@@ -270,8 +370,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bannerImageView.setOnClickListener(v -> {
-            launcher.launch("image/*");
-            key = "banner";
+//            launcher.launch("image/*");
+//            key = "banner";
+            requestPermission();
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 102);
         });
 
         Call<BannerModelList> call = apiInterface.fetchBanner(map);
@@ -301,52 +405,75 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        uploadBannerBtn.setOnClickListener(v -> {
+
+        uploadBannerBtn.setOnClickListener(view -> {
             loadingDialog.show();
-            String bannerUrl = edBannerUrl.getText().toString().trim();
+            Log.d("checkEncodedImg", encodedImage + banTitle);
 
-            if (encodedImage.length() <= 100) {
-                map.put("title", banTitle);
-                map.put("img", encodedImage);
-                map.put("url", bannerUrl);
-                map.put("deleteImg", banImg);
-                map.put("imgKey", "0");
+            String url = edBannerUrl.getText().toString().trim();
 
+            if (encodedImage.equals(banImg)) {
 
-                updateBannerData(map);
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", encodedImage);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("title", banTitle);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", banImg);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "0");
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart);
+
+                updateBannerData(call1);
             } else {
-                map.put("title", banTitle);
-                map.put("img", encodedImage);
-                map.put("url", bannerUrl);
-                map.put("deleteImg", banImg);
-                map.put("imgKey", "1");
+                File imgFile = new File(Uri.parse(encodedImage).getPath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imgFile);
 
-                updateBannerData(map);
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", imgFile.getName(), requestBody);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("title", banTitle);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", banImg);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "1");
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart);
+                updateBannerData(call1);
+
+
             }
         });
 
 
     }
 
-    private void updateBannerData(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.updateBanner(map);
+    private void updateBannerData(Call<MessageModel> call) {
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    loadingDialog.dismiss();
                     bannerDialog.dismiss();
+                } else {
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
+                loadingDialog.dismiss();
             }
 
             @Override
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("Check Error", t.getMessage());
 
                 loadingDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 102 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            encodedImage = FileUtils.getPath(this, uri);
+            Glide.with(this).load(uri).into(bannerImageView);
+        }
     }
 
 
@@ -382,14 +509,24 @@ public class MainActivity extends AppCompatActivity {
         cardLayoutBinding.title.setText(dialogName);
 
         cardLayoutBinding.okBtn.setOnClickListener(view -> {
-            titleTXt = cardLayoutBinding.itemTitle.getText().toString();
+            hindiTitleTXt = cardLayoutBinding.itemTitle.getText().toString();
+            engTitleTXt = cardLayoutBinding.itemEngTitle.getText().toString();
+            url = cardLayoutBinding.itemUrl.getText().toString();
             englishTxt = cardLayoutBinding.englishDesc.getText().toString();
             hindiTxt = cardLayoutBinding.hindiDesc.getText().toString();
 
             if (dialogName.equals("Upload Tips")) {
 
-                if (TextUtils.isEmpty(titleTXt)) {
+                if (TextUtils.isEmpty(hindiTitleTXt)) {
                     cardLayoutBinding.itemTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(engTitleTXt)) {
+                    cardLayoutBinding.itemEngTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(url)) {
+                    cardLayoutBinding.itemUrl.setError("Title required!");
 
                 } else if (TextUtils.isEmpty(englishTxt)) {
                     cardLayoutBinding.englishDesc.setError("Field required!");
@@ -398,7 +535,9 @@ public class MainActivity extends AppCompatActivity {
                     cardLayoutBinding.hindiDesc.setError("Field required!");
                 } else {
                     loadingDialog.show();
-                    map.put("title", titleTXt);
+                    map.put("title", hindiTitleTXt);
+                    map.put("engTitle", engTitleTXt);
+                    map.put("url", url);
                     map.put("englishDesc", englishTxt);
                     map.put("hindiDesc", hindiTxt);
                     uploadData(map, "Upload Tips");
@@ -408,8 +547,17 @@ public class MainActivity extends AppCompatActivity {
                 if (encodedImage == null) {
                     Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
 
-                } else if (TextUtils.isEmpty(titleTXt)) {
+                }
+                if (TextUtils.isEmpty(hindiTitleTXt)) {
                     cardLayoutBinding.itemTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(engTitleTXt)) {
+                    cardLayoutBinding.itemEngTitle.setError("Title required!");
+
+                }
+                if (TextUtils.isEmpty(url)) {
+                    cardLayoutBinding.itemUrl.setError("Title required!");
 
                 } else if (TextUtils.isEmpty(englishTxt)) {
                     cardLayoutBinding.englishDesc.setError("Field required!");
@@ -419,7 +567,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     loadingDialog.show();
                     map.put("img", encodedImage);
-                    map.put("title", titleTXt);
+                    map.put("title", hindiTitleTXt);
+                    map.put("engTitle", engTitleTXt);
+                    map.put("url", url);
                     map.put("englishDesc", englishTxt);
                     map.put("hindiDesc", hindiTxt);
                     uploadData(map, "Upload News");
@@ -468,110 +618,299 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showUpdateAdsDialog(String key) {
-        adsUpdateDialog = new Dialog(this);
-        adsUpdateDialog.setContentView(R.layout.ad_id_layout);
-        adsUpdateDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+//    private void showUpdateAdsDialog(String key) {
+//        adsUpdateDialog = new Dialog(this);
+//        adsUpdateDialog.setContentView(R.layout.ad_id_layout);
+//        adsUpdateDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT);
+//        adsUpdateDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ads_item_bg));
+//        adsUpdateDialog.setCancelable(false);
+//        adsUpdateDialog.show();
+//        admobKey = adsUpdateDialog.findViewById(R.id.admobKey);
+//        applovinAppKey = adsUpdateDialog.findViewById(R.id.appLovin_app_key);
+//        appOpenKey = adsUpdateDialog.findViewById(R.id.app_open_id);
+//        admobBannerKey = adsUpdateDialog.findViewById(R.id.admob_banner_id);
+//        nativeKey = adsUpdateDialog.findViewById(R.id.native_ads_id);
+//        banner = adsUpdateDialog.findViewById(R.id.banner_ads_id);
+//        interstitial = adsUpdateDialog.findViewById(R.id.interstitial_ads_id);
+//        networkName = adsUpdateDialog.findViewById(R.id.networkName);
+//        okBtn = adsUpdateDialog.findViewById(R.id.ok_btn);
+//        cancelBtn = adsUpdateDialog.findViewById(R.id.back_btn);
+//        title = adsUpdateDialog.findViewById(R.id.title);
+//
+//        cancelBtn.setOnClickListener(v -> {
+//            adsUpdateDialog.dismiss();
+//        });
+//
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, adsNetworks);
+//        networkName.setAdapter(adapter);
+//        networkName.setThreshold(1);
+//        apiInterface = ApiWebServices.getApiInterface();
+//        Call<AdsModelList> call = apiInterface.fetchAds(key);
+//        call.enqueue(new Callback<AdsModelList>() {
+//            @Override
+//            public void onResponse(@NonNull Call<AdsModelList> call, @NonNull Response<AdsModelList> response) {
+//                if (response.isSuccessful()) {
+//                    if (Objects.requireNonNull(response.body()).getData() != null) {
+//                        for (AdsModel ads : response.body().getData()) {
+//                            adsModel = ads;
+//                            adIdTitle = ads.getId();
+//                            title.setText(adIdTitle);
+//                            admobKey.setText(ads.getAdmobAppKey());
+//                            applovinAppKey.setText(ads.getAppLovinAppKey());
+//                            appOpenKey.setText(ads.getAppOpen());
+//                            admobBannerKey.setText(ads.getAdmobBanner());
+//                            nativeKey.setText(ads.getNativeADs());
+//                            banner.setText(ads.getBanner());
+//                            interstitial.setText(ads.getInterstitial());
+//                            networkName.setText(ads.getNetworkName());
+//                        }
+//                    }
+//                } else {
+//                    Log.d("adsError", response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<AdsModelList> call, @NonNull Throwable t) {
+//                Log.d("adsError", t.getMessage());
+//            }
+//        });
+//
+//
+//        okBtn.setOnClickListener(v -> {
+//            String admobId = admobKey.getText().toString().trim();
+//            String ironSourceId = applovinAppKey.getText().toString().trim();
+//            String appOpenId = appOpenKey.getText().toString().trim();
+//            String admobBanner = admobBannerKey.getText().toString().trim();
+//            String nativeId = nativeKey.getText().toString().trim();
+//            String bannerId = banner.getText().toString().trim();
+//            String interstitialId = interstitial.getText().toString().trim();
+//            String network = networkName.getText().toString().trim();
+//            if (admobId.equals(adsModel.getAdmobAppKey())
+//
+//                    && ironSourceId.equals(adsModel.getAppLovinAppKey())
+//                    && appOpenId.equals(adsModel.getAppOpen())
+//                    && admobBanner.equals(adsModel.getAdmobBanner())
+//                    && nativeId.equals(adsModel.getNativeADs())
+//                    && bannerId.equals(adsModel.getBanner())
+//                    && interstitialId.equals(adsModel.getInterstitial())
+//                    && network.equals(adsModel.getNetworkName())
+//
+//            ) {
+//
+//                Toast.makeText(this, "No changes made in Ids", Toast.LENGTH_SHORT).show();
+//
+//            } else {
+//
+//
+//                loadingDialog.show();
+//                map.put("id", adIdTitle);
+//                map.put("admobAppKey", admobId);
+//                map.put("appLovinAppKey", ironSourceId);
+//                map.put("appOpen", appOpenId);
+//                map.put("admobBanner", admobBanner);
+//                map.put("native", nativeId);
+//                map.put("banner", bannerId);
+//                map.put("interstitial", interstitialId);
+//                map.put("networkName", network);
+//                updateAdIds(map);
+//            }
+//        });
+//    }
+
+//    private void updateAdIds(Map<String, String> map) {
+//        Call<MessageModel> call = apiInterface.updateAdIds(map);
+//        call.enqueue(new Callback<MessageModel>() {
+//            @Override
+//            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+//                if (response.isSuccessful()) {
+//                    assert response.body() != null;
+//                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//                loadingDialog.dismiss();
+//                adsUpdateDialog.dismiss();
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+//                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                loadingDialog.dismiss();
+//            }
+//        });
+//    }
+
+    private void showUpdateLoanAdsDialog(String id) {
+
+        loanGuideDialog = new Dialog(this);
+        loanGuideBinding = AdLayoutLoanGuideBinding.inflate(getLayoutInflater());
+        loanGuideDialog.setContentView(loanGuideBinding.getRoot());
+        loanGuideDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        adsUpdateDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ads_item_bg));
-        adsUpdateDialog.setCancelable(false);
-        adsUpdateDialog.show();
-        admobKey = adsUpdateDialog.findViewById(R.id.admobKey);
-        applovinAppKey = adsUpdateDialog.findViewById(R.id.appLovin_app_key);
-        appOpenKey = adsUpdateDialog.findViewById(R.id.app_open_id);
-        admobBannerKey = adsUpdateDialog.findViewById(R.id.admob_banner_id);
-        nativeKey = adsUpdateDialog.findViewById(R.id.native_ads_id);
-        banner = adsUpdateDialog.findViewById(R.id.banner_ads_id);
-        interstitial = adsUpdateDialog.findViewById(R.id.interstitial_ads_id);
-        networkName = adsUpdateDialog.findViewById(R.id.networkName);
-        okBtn = adsUpdateDialog.findViewById(R.id.ok_btn);
-        cancelBtn = adsUpdateDialog.findViewById(R.id.back_btn);
-        title = adsUpdateDialog.findViewById(R.id.title);
+        loanGuideDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.item_bg));
+        loanGuideDialog.setCancelable(false);
+        loanGuideDialog.show();
 
-        cancelBtn.setOnClickListener(v -> {
-            adsUpdateDialog.dismiss();
-        });
+        loanGuideBinding.textView.setText(id);
 
+        loanGuideBinding.cancelId.setOnClickListener(v -> loanGuideDialog.dismiss());
+        BannerTopNetworkName = loanGuideBinding.bannerTopNetworkName;
+        BannerBottomNetworkName = loanGuideBinding.bannerBottomNetworkName;
+        InterstitialNetwork = loanGuideBinding.interstitialNetwork;
+        NativeAdsNetworkName = loanGuideBinding.nativeAdsNetworkName;
+        RewardAdsNetwork = loanGuideBinding.rewardAdsNetwork;
+        UploadAdsBtn = loanGuideBinding.uploadIds;
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, adsNetworks);
-        networkName.setAdapter(adapter);
-        networkName.setThreshold(1);
+        AppId = loanGuideBinding.appId;
+        AppLovinSdkKey = loanGuideBinding.appLovinSdkKey;
+        BannerTop = loanGuideBinding.bannerTop;
+        BannerBottom = loanGuideBinding.bannerBottom;
+        InterstitialAds = loanGuideBinding.interstitialAds;
+        NativeAds = loanGuideBinding.nativeAds;
+        nativeType = loanGuideBinding.nativeAdsType;
+        rewardAds = loanGuideBinding.rewardAds;
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this,
+                androidx.databinding.library.baseAdapters.R.layout.support_simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(MainActivity.this,
+                androidx.databinding.library.baseAdapters.R.layout.support_simple_spinner_dropdown_item, item2);
+        nativeType.setAdapter(arrayAdapter2);
+        BannerTopNetworkName.setAdapter(arrayAdapter);
+        BannerBottomNetworkName.setAdapter(arrayAdapter);
+        InterstitialNetwork.setAdapter(arrayAdapter);
+        NativeAdsNetworkName.setAdapter(arrayAdapter);
+        RewardAdsNetwork.setAdapter(arrayAdapter);
+
         apiInterface = ApiWebServices.getApiInterface();
-        Call<AdsModelList> call = apiInterface.fetchAds(key);
-        call.enqueue(new Callback<AdsModelList>() {
+        Call<List<LoanAdsModel>> call = apiInterface.fetchLoanAds(id);
+        call.enqueue(new Callback<List<LoanAdsModel>>() {
             @Override
-            public void onResponse(@NonNull Call<AdsModelList> call, @NonNull Response<AdsModelList> response) {
+            public void onResponse(@NonNull Call<List<LoanAdsModel>> call, @NonNull Response<List<LoanAdsModel>> response) {
                 if (response.isSuccessful()) {
-                    if (Objects.requireNonNull(response.body()).getData() != null) {
-                        for (AdsModel ads : response.body().getData()) {
-                            adsModel = ads;
-                            adIdTitle = ads.getId();
-                            title.setText(adIdTitle);
-                            admobKey.setText(ads.getAdmobAppKey());
-                            applovinAppKey.setText(ads.getAppLovinAppKey());
-                            appOpenKey.setText(ads.getAppOpen());
-                            admobBannerKey.setText(ads.getAdmobBanner());
-                            nativeKey.setText(ads.getNativeADs());
-                            banner.setText(ads.getBanner());
-                            interstitial.setText(ads.getInterstitial());
-                            networkName.setText(ads.getNetworkName());
+                    if (response.body() != null) {
+                        for (LoanAdsModel ads : response.body()) {
+                            AppId.setText(ads.getAppId());
+                            AppLovinSdkKey.setText(ads.getAppLovinAppKey());
+                            BannerTopNetworkName.setText(ads.getBannerTopAdNetwork());
+                            BannerTop.setText(ads.getBannerTop());
+                            BannerBottomNetworkName.setText(ads.getBannerBottomAdNetwork());
+                            BannerBottom.setText(ads.getBannerBottom());
+                            InterstitialNetwork.setText(ads.getInterstitalAdNetwork());
+                            InterstitialAds.setText(ads.getInterstitial());
+                            NativeAdsNetworkName.setText(ads.getNativeAdNetwork());
+                            NativeAds.setText(ads.getNativeAd());
+                            nativeType.setText(ads.getNativeType());
+                            RewardAdsNetwork.setText(ads.getRewardAdNetwork());
+                            rewardAds.setText(ads.getRewardAd());
+
                         }
                     }
                 } else {
-                    Log.d("adsError", response.message());
+                    Log.e("adsError", response.message());
                 }
+
             }
 
             @Override
-            public void onFailure(@NonNull Call<AdsModelList> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<LoanAdsModel>> call, @NonNull Throwable t) {
                 Log.d("adsError", t.getMessage());
             }
         });
 
 
-        okBtn.setOnClickListener(v -> {
-            String admobId = admobKey.getText().toString().trim();
-            String ironSourceId = applovinAppKey.getText().toString().trim();
-            String appOpenId = appOpenKey.getText().toString().trim();
-            String admobBanner = admobBannerKey.getText().toString().trim();
-            String nativeId = nativeKey.getText().toString().trim();
-            String bannerId = banner.getText().toString().trim();
-            String interstitialId = interstitial.getText().toString().trim();
-            String network = networkName.getText().toString().trim();
-            if (admobId.equals(adsModel.getAdmobAppKey())
+        UploadAdsBtn.setOnClickListener(view -> {
+            appId = AppId.getText().toString().trim();
+            appLovinSdkKey = AppLovinSdkKey.getText().toString().trim();
+            bannerTopNetworkName = BannerTopNetworkName.getText().toString().trim();
+            bannerTop = BannerTop.getText().toString().trim();
+            bannerBottomNetworkName = BannerBottomNetworkName.getText().toString().trim();
+            bannerBottom = BannerBottom.getText().toString().trim();
+            interstitialNetwork = InterstitialNetwork.getText().toString().trim();
+            interstitialAds = InterstitialAds.getText().toString().trim();
+            nativeAdsNetworkName = NativeAdsNetworkName.getText().toString().trim();
+            nativeAds = NativeAds.getText().toString().trim();
+            nativeAdsType = nativeType.getText().toString().trim();
+            rewardAdsNetwork = RewardAdsNetwork.getText().toString().trim();
+            rewardAd = rewardAds.getText().toString().trim();
 
-                    && ironSourceId.equals(adsModel.getAppLovinAppKey())
-                    && appOpenId.equals(adsModel.getAppOpen())
-                    && admobBanner.equals(adsModel.getAdmobBanner())
-                    && nativeId.equals(adsModel.getNativeADs())
-                    && bannerId.equals(adsModel.getBanner())
-                    && interstitialId.equals(adsModel.getInterstitial())
-                    && network.equals(adsModel.getNetworkName())
-
-            ) {
-
-                Toast.makeText(this, "No changes made in Ids", Toast.LENGTH_SHORT).show();
-
+            if (TextUtils.isEmpty(appId)) {
+                AppId.setError("App id is required");
+                AppId.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(appLovinSdkKey)) {
+                AppLovinSdkKey.setError("AppLovinSdkKey is required");
+                AppLovinSdkKey.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(bannerTopNetworkName)) {
+                BannerTopNetworkName.setError("BannerTopNetworkName is required");
+                BannerTopNetworkName.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(bannerTop)) {
+                BannerTop.setError("BannerTop is required");
+                BannerTop.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(bannerBottomNetworkName)) {
+                BannerBottomNetworkName.setError("BannerBottomNetworkName is required");
+                BannerBottomNetworkName.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(bannerBottom)) {
+                BannerBottom.setError("BannerBottom is required");
+                BannerBottom.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(interstitialNetwork)) {
+                InterstitialNetwork.setError("InterstitialNetwork is required");
+                InterstitialNetwork.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(interstitialAds)) {
+                InterstitialAds.setError("InterstitialAds is required");
+                InterstitialAds.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(nativeAdsNetworkName)) {
+                NativeAdsNetworkName.setError("NativeAdsNetworkName is required");
+                NativeAdsNetworkName.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(nativeAds)) {
+                NativeAds.setError("NativeAds is required");
+                NativeAds.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(nativeAdsType)) {
+                nativeType.setError("NativeType is required");
+                nativeType.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(rewardAdsNetwork)) {
+                RewardAdsNetwork.setError("rewardAdsNetwork is required");
+                RewardAdsNetwork.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(rewardAd)) {
+                rewardAds.setError("rewardAd is required");
+                rewardAds.requestFocus();
+                loading.dismiss();
             } else {
-
-
                 loadingDialog.show();
-                map.put("id", adIdTitle);
-                map.put("admobAppKey", admobId);
-                map.put("appLovinAppKey", ironSourceId);
-                map.put("appOpen", appOpenId);
-                map.put("admobBanner", admobBanner);
-                map.put("native", nativeId);
-                map.put("banner", bannerId);
-                map.put("interstitial", interstitialId);
-                map.put("networkName", network);
-                updateAdIds(map);
+                map.put("id", id);
+                map.put("appId", appId);
+                map.put("appLovinSdkKey", appLovinSdkKey);
+                map.put("bannerTop", bannerTop);
+                map.put("bannerTopNetworkName", bannerTopNetworkName);
+                map.put("bannerBottom", bannerBottom);
+                map.put("bannerBottomNetworkName", bannerBottomNetworkName);
+                map.put("interstitialAds", interstitialAds);
+                map.put("interstitialNetwork", interstitialNetwork);
+                map.put("nativeAds", nativeAds);
+                map.put("nativeAdsNetworkName", nativeAdsNetworkName);
+                map.put("nativeType", nativeAdsType);
+                map.put("rewardAd", rewardAd);
+                map.put("rewardAdNetwork", rewardAdsNetwork);
+                updateLoanAdIds(map);
             }
+
         });
+
     }
 
-    private void updateAdIds(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.updateAdIds(map);
+    private void updateLoanAdIds(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateLoanAdIds(map);
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
@@ -580,7 +919,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.dismiss();
-                adsUpdateDialog.dismiss();
+                loanGuideDialog.dismiss();
             }
 
             @Override
@@ -596,5 +935,9 @@ public class MainActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+    public void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
     }
 }

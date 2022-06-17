@@ -1,5 +1,6 @@
 package com.instantloanguide.allloantips.models;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -30,8 +31,8 @@ public interface ApiInterface {
     Call<TipsModelList> getAllTips();
 
     @FormUrlEncoded
-    @POST("ads_id_fetch.php")
-    Call<AdsModelList> fetchAds(@Field("id") String id);
+    @POST("loan_fetch_ads.php")
+    Call<List<AdsModel>> fetchAds(@Field("id") String id);
 
     @FormUrlEncoded
     @POST("fetch_banners.php")
@@ -56,5 +57,9 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("upload_user_data.php")
     Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
+
+    @POST("fetch_own_text_url.php")
+    Call<OwnTextUrlModel> fetchOwnText();
+
 }
 

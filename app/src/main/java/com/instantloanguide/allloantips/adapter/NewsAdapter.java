@@ -127,7 +127,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         private void bindAdData() {
-            showAds.showNativeAds(context, binding.adLayout);
+            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+                showAds.showNativeAds(context, binding.adLayout);
+            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+                showAds.showMrec(context, binding.adLayout);
+            }
 
         }
 
