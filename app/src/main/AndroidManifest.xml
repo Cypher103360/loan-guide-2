@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.instantloanguide.allloantips">
+    package="com.dreamteam.teamprediction">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".utils.MyApp"
+        android:name=".fordreamteamcricket.utils.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,57 +22,57 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".activities.SignUpActivity"
+            android:name=".fordreamteamcricket.activities.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TipsDetailActivity"
+            android:name=".fordreamteamcricket.activities.TipsDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.NewsDetailsActivity"
+            android:name=".fordreamteamcricket.activities.NewsDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PrivacyPolicyActivity"
+            android:name=".fordreamteamcricket.activities.PrivacyPolicyActivity"
             android:exported="false" />
 
         <service
-            android:name=".utils.MyReceiver"
+            android:name=".fordreamteamcricket.utils.MyReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".activities.AppDetailsActivity"
+            android:name=".fordreamteamcricket.activities.AppDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoanAppsActivity"
+            android:name=".fordreamteamcricket.activities.LoanAppsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CategoryActivity"
+            android:name=".fordreamteamcricket.activities.CategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SalaryAmountActivity"
+            android:name=".fordreamteamcricket.activities.SalaryAmountActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PurposeForLoanActivity"
+            android:name=".fordreamteamcricket.activities.PurposeForLoanActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CheckDocumentActivity"
+            android:name=".fordreamteamcricket.activities.CheckDocumentActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoanAmountActivity"
+            android:name=".fordreamteamcricket.activities.LoanAmountActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.IncomeResourceActivity"
+            android:name=".fordreamteamcricket.activities.IncomeResourceActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".fordreamteamcricket.activities.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.LoanGuide.NoActionBar" />
         <activity
-            android:name=".activities.WelcomeActivity"
+            android:name=".fordreamteamcricket.activities.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".fordreamteamcricket.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

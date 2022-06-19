@@ -20,4 +20,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Loan Guide"
 include ':app'
-include ':loanguideadmin'

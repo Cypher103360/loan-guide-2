@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "331702306061",
-    "project_id": "loan-guide-5efee",
-    "storage_bucket": "loan-guide-5efee.appspot.com"
+    "project_number": "343699557215",
+    "project_id": "loan-guide-2-a6e29",
+    "storage_bucket": "loan-guide-2-a6e29.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331702306061:android:123b42ae2e0cf8db8ddc44",
+        "mobilesdk_app_id": "1:343699557215:android:b578bdfa194f8ec9a084ea",
         "android_client_info": {
-          "package_name": "com.instantloanguide.allloantips"
+          "package_name": "com.dreamteam.teamprediction.fordreamteamcricket"
         }
       },
       "oauth_client": [
         {
-          "client_id": "331702306061-rea35sn27ae0mg3s226jkful571pn8k7.apps.googleusercontent.com",
+          "client_id": "343699557215-f3qjempa1kfvsra4p287td3jr1i1aajo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAfJJhn7mLY0Wv9kNHRCZK9ZOZfhoi3YxE"
+          "current_key": "AIzaSyAIKd4cpivPjeR-icKF5ncmCLqu4PR5xDo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "331702306061-rea35sn27ae0mg3s226jkful571pn8k7.apps.googleusercontent.com",
+              "client_id": "343699557215-f3qjempa1kfvsra4p287td3jr1i1aajo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
